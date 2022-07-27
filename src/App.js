@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { client } from "./client/client";
+import { ApolloProvider } from '@apollo/client';
+import GetProducts from "./pages/owner/GetProducts";
+import AddProduct from "./pages/owner/AddProduct";
+import {BrowserRouter, Routes, Route} from "react-router-dom"
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ApolloProvider client={client}>
+      <div className="App">        
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<AddProduct/>}/>
+            <Route path="/products" element={<GetProducts/>}>
+              {/* <Route path="detail" element={<Page3/>}/>
+              <Route path="image" element={<Page4/>}/>
+              <Route path=":pageName/:pageId" element={<PageVariable/>}/> */}
+            </Route>            
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </ApolloProvider>
   );
 }
 
