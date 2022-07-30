@@ -1,7 +1,5 @@
 import React from "react";
 import "./App.css";
-import { client } from "./client/client";
-import { ApolloProvider } from '@apollo/client';
 import GetProducts from "./pages/owner/GetProducts";
 import AddProduct from "./pages/owner/AddProduct";
 import {Checkout} from "./pages/checkout/index.jsx";
@@ -9,7 +7,6 @@ import {BrowserRouter, Routes, Route} from "react-router-dom"
 
 function App() {
   return (
-    <ApolloProvider client={client}>
       <div className="App">        
         <BrowserRouter>
           <Routes>
@@ -24,7 +21,6 @@ function App() {
           </Routes>
         </BrowserRouter>
       </div>
-    </ApolloProvider>
   );
 }
 

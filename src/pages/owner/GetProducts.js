@@ -74,7 +74,7 @@ const GetProducts = () => {
                             <td>{product.colors[0].name}</td>
                             <td>{product.description}</td>
                             <td>{product.categories}</td>
-                            <td><img style={{width:"50%",height:"50%"}} src={process.env.PUBLIC_URL + 'upload-images/' + product.pictures}/></td>
+                            <td><img style={{width:"25%",height:"25%"}} src={process.env.PUBLIC_URL + 'upload-images/' + product.pictures}/></td>
                             <td>{product.sizes}</td>
                             <td>{product.featuringFrom}</td>
                             <td>{product.featuringTo}</td>
