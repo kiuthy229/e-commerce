@@ -15,6 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<AddProduct/>}/>
             <Route path="/products" element={<GetProducts/>}>
+            
               {/* <Route path="detail" element={<Page3/>}/>
               <Route path="image" element={<Page4/>}/>
               <Route path=":pageName/:pageId" element={<PageVariable/>}/> */}
