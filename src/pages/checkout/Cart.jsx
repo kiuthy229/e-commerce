@@ -43,8 +43,16 @@ export function Cart() {
       initialValues={{
         customerName: getCart.data.customer.name,
         location: getCart.data.customer.location,
-        item: getCart.data.customer.items.map(item => item),
-        quantity: getCart.data.customer.items.map(item => item.quantity)
+        item: {
+          itemProductId: '',
+          itemColor: '',
+          itemSize: '',
+          itemQuantity: 0
+        },
+        productId: getCart.data.customer.items.map(item => item.productId),
+        quantity: getCart.data.customer.items.map(item => item.quantity),
+        color: getCart.data.customer.items.map(item => item.color),
+        size: getCart.data.customer.items.map(item => item.size)
       }}
       validate={values => {
         const errors = {};
@@ -86,7 +94,7 @@ export function Cart() {
             <div className='container'>
 
               <div>
-                {values.item.map((item, index) => (
+                {getCart.data.customer.items.map((item, index) => (
                   <div className='product'>
                     <div>{item.color}</div>
                     <div>{item.size}</div>
@@ -107,9 +115,34 @@ export function Cart() {
                           return error;
                         }}
                       />
-
-                      {errors.quantity && touched.quantity && errors.quantity}
+                      {
+                        errors.quantity && touched.quantity && errors.quantity
+                      }
                     </div>
+                    <Field
+                      type='text'
+                      name={`item[${index}].itemQuantity`}
+                      onChange={handleChange}
+                      value={values.quantity[index]}
+                    />
+                    <Field
+                      type='text'
+                      name={`item[${index}].itemProductId`}
+                      onChange={handleChange}
+                      value={values.productId[index]}
+                    />
+                    <Field
+                      type='text'
+                      name={`item[${index}].itemColor`}
+                      onChange={handleChange}
+                      value={values.color[index]}
+                    />
+                    <Field
+                      type='text'
+                      name={`item[${index}].itemSize`}
+                      onChange={handleChange}
+                      value={values.size[index]}
+                    />
                     <div><Product productId={item.productId} /></div>
                   </div>
                 ))}
