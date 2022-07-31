@@ -17,13 +17,14 @@ const GET_PRODUCT = gql`
   }
 }
 `;
-export function Product(productId) {
+export function Product(productId, priceList) {
 
   const getProduct = useQuery(GET_PRODUCT, {
     variables: {
       productId: productId.productId
     }
   });
+  priceList = [...priceList, getProduct.data?.product?.price]
   return (
     <div className='product'>
       <div>{getProduct.data?.product?.name}</div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { Product } from './ProductInfo';
 import { Fee } from './Fee';
@@ -8,74 +8,64 @@ import { Formik, Form, Field, FieldArray } from 'formik';
 const GET_CART = gql`
 query Query($customerId: ID!) {
   customer(customerId: $customerId) {
+    customerId: id
+    name
+    location
     items {
       productId
       color
       size
       quantity
     }
-    name
-    location
   }
 }
 `;
 
 const UPDATE_CUSTOMER = gql`
-mutation($customer: CustomerInput!){
+mutation UpdateCustomer($customer: CustomerInput!){
   updateCustomer(customer: $customer) {
     id
   }
 }
 `;
 
+
 export function Cart() {
+  const [priceList, setPriceList] = useState([]);
   const getCart = useQuery(GET_CART, {
     variables: {
       customerId: 1
     }
   });
+  const [updateCustomer, updateCustomerResult] = useMutation(UPDATE_CUSTOMER);
 
 
-  const [updateCustomer, { loading }] = useMutation(UPDATE_CUSTOMER);
+
   if (getCart.loading) return <div>Loading...</div>
+  if (updateCustomerResult.loading) return <div>Submitting...</div>
+
   return (
     <Formik
       initialValues={{
-        customerName: getCart.data.customer.name,
-        location: getCart.data.customer.location,
-        item: {
-          itemProductId: '',
-          itemColor: '',
-          itemSize: '',
-          itemQuantity: 0
-        },
-        productId: getCart.data.customer.items.map(item => item.productId),
-        quantity: getCart.data.customer.items.map(item => item.quantity),
-        color: getCart.data.customer.items.map(item => item.color),
-        size: getCart.data.customer.items.map(item => item.size)
+        customer: getCart.data.customer
       }}
       validate={values => {
         const errors = {};
-        if (!values.customerName) {
+        if (!values.customer.name) {
           errors.customerName = 'Required';
+          console.log('invalid name')
         }
-        if (!values.location) {
+        if (!values.customer.location) {
+          console.log('invalid loc')
           errors.location = 'Required';
         }
-
         return errors;
       }}
-      onSubmit={(values, { setSubmitting }) => {
-        console.log('submitted');
+      onSubmit={(values) => {
+        console.log(values.customer);
         updateCustomer({
           variables: {
-            customer: {
-              name: values.customerName,
-              location: values.location
-            },
-            items: {
-
-            }
+            customer: values.customer
           }
         })
       }}
@@ -92,90 +82,80 @@ export function Cart() {
         }) => (
           <Form onSubmit={handleSubmit}>
             <div className='container'>
-
-              <div>
-                {getCart.data.customer.items.map((item, index) => (
-                  <div className='product'>
-                    <div>{item.color}</div>
-                    <div>{item.size}</div>
-                    <div>
-                      <Field
-                        type='number'
-                        name={`quantity.${index}`}
-                        placeholder='Customer Name'
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.quantity[index]}
-                        validate={() => {
-                          let error;
-                          if (!values.quantity[index]) {
-                            error = 'Required';
-                            console.log('invalid quan')
-                          }
-                          return error;
-                        }}
-                      />
-                      {
-                        errors.quantity && touched.quantity && errors.quantity
-                      }
-                    </div>
-                    <Field
-                      type='text'
-                      name={`item[${index}].itemQuantity`}
-                      onChange={handleChange}
-                      value={values.quantity[index]}
-                    />
-                    <Field
-                      type='text'
-                      name={`item[${index}].itemProductId`}
-                      onChange={handleChange}
-                      value={values.productId[index]}
-                    />
-                    <Field
-                      type='text'
-                      name={`item[${index}].itemColor`}
-                      onChange={handleChange}
-                      value={values.color[index]}
-                    />
-                    <Field
-                      type='text'
-                      name={`item[${index}].itemSize`}
-                      onChange={handleChange}
-                      value={values.size[index]}
-                    />
-                    <div><Product productId={item.productId} /></div>
-                  </div>
-                ))}
-                <div><Fee location={values.location} /></div>
-              </div>
-
-
               <div>
                 <Field
                   type='text'
-                  name='customerName'
+                  name='customer.name'
                   placeholder='Customer Name'
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.customerName}
+                  value={values.customer.name}
                 />
                 {errors.customerName && touched.customerName && errors.customerName}
                 <Field
                   type='text'
-                  name='location'
+                  name='customer.location'
                   placeholder='Location'
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.location}
+                  value={values.customer.location}
                 />
                 {errors.location && touched.location && errors.location}
 
               </div>
-            </div>
+              <div>
+                {<FieldArray name='item'>
+                  {(helper) => (<div>
+                    {values.customer.items.map((item, index) => (
+                      <div className='product'>
+                        <div>{item.color}</div>
+                        <div>{item.size}</div>
+                        <div>
+                          <Field
+                            type='number'
+                            name={`customer.items.${index}.quantity`}
+                            placeholder='Customer Name'
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={item.quantity}
+                            validate={() => {
+                              let error;
+                              if (!item.quantity) {
+                                error = 'Required';
+                                console.log('invalid quan')
+                              }
+                              return error;
+                            }}
+                          />
+                          {
+                            errors.quantity && touched.quantity && errors.quantity
+                          }
+                        </div>
+
+
+                        <div><Product productId={item.productId} /></div>
+                      </div>
+                    ))}
+                  </div>)}
+                </FieldArray>}
+                <div>
+                  {
+
+                    values.customer.items.map(item => item.quantity)
+                  }
+                </div>
+                <div>
+                  <Fee location={values.customer.location} />
+                </div >
+              </div>
+
+
+            </div >
             <button
               type='button'
               onClick={() => {
                 console.log(values)
+                alert(JSON.stringify(values, null, 2));
               }}
             >
               Test
@@ -183,10 +163,11 @@ export function Cart() {
             <button type="submit" disabled={isSubmitting}>
               Submit
             </button>
-          </Form>
+          </Form >
         )
       }
 
-    </Formik>
+    </Formik >
   );
 }
+{/* <CartField name={`item[${index}]`} /> */ }
