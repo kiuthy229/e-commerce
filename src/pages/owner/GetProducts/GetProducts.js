@@ -1,9 +1,10 @@
 import React, {useEffect, useState, useReducer} from "react";
 import { useQuery, gql } from "@apollo/client/react";
-import { LOAD_PRODUCTS } from "../../data/queries/get-products";
-import edit from "../../common/assets/edit.png"
-import { REMOVE_PRODUCT_MUTATION } from "../../data/mutations/remove-product";
+import { LOAD_PRODUCTS } from "../../../data/queries/get-products";
+import edit from "../../../common/assets/edit.png"
+import { REMOVE_PRODUCT_MUTATION } from "../../../data/mutations/remove-product";
 import { useMutation } from "@apollo/client/react/hooks";
+import './GetProducts.css'
 
 const GetProducts = () => {
     const {error, loading, data} = useQuery(LOAD_PRODUCTS)
@@ -32,7 +33,6 @@ const GetProducts = () => {
         if (result.error) {
             console.log(result.error)
         }
-        forceUpdate()
     }
 
     return (
@@ -71,11 +71,21 @@ const GetProducts = () => {
                             <td>{product.name}</td>
                             <td>{product.price}</td>
                             <td>{product.stock}</td>
-                            <td>{product.colors[0].name}</td>
+                            <td>
+                                {product.colors.map((color)=>(<span>{color.name},</span>))}
+                            </td>
                             <td>{product.description}</td>
                             <td>{product.categories}</td>
-                            <td><img style={{width:"25%",height:"25%"}} src={process.env.PUBLIC_URL + 'upload-images/' + product.pictures}/></td>
-                            <td>{product.sizes}</td>
+                            <td>
+                                {
+                                    product.pictures.map((pic)=>
+                                        <img style={{width:"25%",height:"25%"}} src={process.env.PUBLIC_URL + 'upload-images/' + pic}/>
+                                    )
+                                }
+                            </td>
+                            <td>
+                                {   product.sizes.map((size) => <span>{size},</span>)}
+                            </td>
                             <td>{product.featuringFrom}</td>
                             <td>{product.featuringTo}</td>
                             <td>

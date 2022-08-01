@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400&display=swap');
+*{
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+}
+.body {
+  background-color: #F9F6F4;
+}
+.form-add{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    font-size: 15px;
+
+    position: absolute;
+    width: 100%;
+    height: auto;
+    left: 0%;
+    top: 5%;
+}
+div input{
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+    font-size: 15px;
+
+    position: relative;
+}
+.ipt-sizes{
+    display: flex;
+    flex-direction: row;
+
+    left: 12%;
+}
+.add-color{
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin:5px;
+    padding: 4px 5px;
+    font-size: 13px;
+    background-color: #FFFFFF;
+    color:#FF993C ;
+    
+    font-weight: 700;
+    
+    line-height: 26px;
+
+    position: relative;
+    width: 80px;
+    height: 30px;
+    left: 64%;
+    top:-37px;
+
+    border: 2px solid #FF993C;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.add-size{
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin:5px;
+    padding: 4px 5px;
+    font-size: 13px;
+    background-color: #FFFFFF;
+    color:#FF993C ;
+    
+    font-weight: 700;
+    
+    line-height: 26px;
+
+    position: relative;
+    width: 80px;
+    height: 30px;
+    left: 61%;
+    top:-32px;
+
+    border: 2px solid #FF993C;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.add-product{
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin:5px;
+    padding: 4px 5px;
+    font-size: 13px;
+    background-color: #FFFFFF;
+    color:#FF993C ;
+    
+    font-weight: 700;
+    
+    line-height: 26px;
+
+    position: relative;
+    width: 27%;
+    height: 5.5%;
+    left: 35%;
+
+    border: 2px solid #FF993C;
+    border-radius: 8px;
+}
+.add-product:hover{
+    background-color: #FF993C;
+    color: #FFFFFF;
+    border: 2.5px solid #FF993C;
+}
+.ipt-color-hex{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width:55px;
+    height:30px;
+    margin:1px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+.ipt-color-hex::-webkit-color-swatch{
+    border-radius: 8px;
+    border: none;
+}
+.ipt-color-hex::-moz-color-swatch{
+    border-radius: 8px;
+    border:none;
+}

@@ -28,7 +28,7 @@ const PostImage = () => {
         console.log('handleFileInput working!')
         console.log(e.target.files[0]);
         const formData = new FormData(); 
-        formData.append('myFile', e.target.files[0], e.target.files[0].name);
+        formData.append('pictures', e.target.files[0], e.target.files[0].name);
         setImage(formData);
       }
 
