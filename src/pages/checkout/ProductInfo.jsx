@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useQuery, gql } from '@apollo/client';
 import './Cart.css';
 
@@ -17,14 +17,20 @@ const GET_PRODUCT = gql`
   }
 }
 `;
-export function Product(productId, priceList) {
-
+export function Product(productId, price) {
+  const [queryPrice, setQueryPrice] = useState(0);
   const getProduct = useQuery(GET_PRODUCT, {
     variables: {
       productId: productId.productId
     }
   });
-  priceList = [...priceList, getProduct.data?.product?.price]
+  console.log('in proinfo b4', typeof (price))
+  useEffect(() => {
+    setQueryPrice(getProduct?.data?.product.price);
+    price = queryPrice;
+    console.log('in proinfo after', price)
+  }, [setQueryPrice, price, queryPrice, getProduct?.data?.product.price])
+  if (getProduct.loading) return <div>Loading...</div>
   return (
     <div className='product'>
       <div>{getProduct.data?.product?.name}</div>

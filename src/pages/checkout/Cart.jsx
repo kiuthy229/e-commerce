@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef, createRef } from 'react'
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { Product } from './ProductInfo';
 import { Fee } from './Fee';
 import './Cart.css';
 import { Formik, Form, Field, FieldArray } from 'formik';
+
 
 const GET_CART = gql`
 query Query($customerId: ID!) {
@@ -29,20 +30,57 @@ mutation UpdateCustomer($customer: CustomerInput!){
 }
 `;
 
+const GET_PRODUCT = gql`
+  query Query($productId: ID!) {
+  product(id: $productId) {
+    id
+    name
+    price
+    stock
+    colors {
+      name
+      hexValue
+    }
+    pictures
+  }
+}
+`;
 
 export function Cart() {
   const [priceList, setPriceList] = useState([]);
+  const price = useRef(null);
   const getCart = useQuery(GET_CART, {
     variables: {
       customerId: 1
     }
   });
+
   const [updateCustomer, updateCustomerResult] = useMutation(UPDATE_CUSTOMER);
-
-
-
+  const getProduct = useQuery(GET_PRODUCT, {
+    skip: !getCart.data,
+    variables: {
+      productId: getCart.data && getCart.data?.customer.items[0].productId
+    }
+  });
+  // const UseGetProduct = (productId) => useQuery(GET_PRODUCT, {
+  //   skip: !getCart.data,
+  //   variables: {
+  //     // productId: getCart.data && getCart.data?.customer.items[0].productId
+  //     productId: productId
+  //   }
+  // });
+  // const getProduct1 = useQueries(
+  //   getCart?.data?.customer?.items.map(item => {
+  //     return {
+  //       queryKey: item.productId,
+  //       queryFn: UseGetProduct(item.productId)
+  //     }
+  //   })
+  // ) || {}
   if (getCart.loading) return <div>Loading...</div>
   if (updateCustomerResult.loading) return <div>Submitting...</div>
+
+
 
   return (
     <Formik
@@ -133,14 +171,13 @@ export function Cart() {
                         </div>
 
 
-                        <div><Product productId={item.productId} /></div>
+                        <div><Product productId={item.productId} price={price} /></div>
                       </div>
                     ))}
                   </div>)}
                 </FieldArray>}
                 <div>
                   {
-
                     values.customer.items.map(item => item.quantity)
                   }
                 </div>
@@ -156,6 +193,7 @@ export function Cart() {
               onClick={() => {
                 console.log(values)
                 alert(JSON.stringify(values, null, 2));
+                console.log(price.current)
               }}
             >
               Test
