@@ -1,11 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400&display=swap');
-*{
-  font-family: 'Montserrat', sans-serif;
-  font-style: normal;
-}
-.body {
-  background-color: #F9F6F4;
-}
+
 .form-add{
     display: flex;
     flex-direction: row;
@@ -15,24 +8,58 @@
     font-size: 15px;
 
     position: absolute;
-    width: 100%;
-    height: auto;
-    left: 0%;
-    top: 5%;
+    width: 80%;
+    height: 100%;
+    left: 15%;
+    top: -20%;
+
+    box-sizing: border-box;
+
+    margin: auto;
+    margin-top: 10%;
+  
+    background: linear-gradient(135deg, #ffffff, #ffffff);
+    border: 0px;
+    border-radius: 8px;
 }
 div input{
     justify-content: center;
     align-items: center;
-    margin: 5px;
+    margin: 5px 0px 5px 0px;
     font-size: 15px;
 
     position: relative;
+}
+.ipt-name{
+    left:10px;
+    width: 240px;
+}
+.ipt-price{
+    left:18px;
+    width: 240px;
+}
+.ipt-stock{
+    left:15px;
+    width: 240px;
 }
 .ipt-sizes{
     display: flex;
     flex-direction: row;
 
-    left: 12%;
+    width: 305px;
+    left: 0px;
+}
+.ipt-description{
+    left:42px;
+}
+.ipt-categories{
+    left:48px
+}
+.ipt-featuringFrom{
+    left:10px
+}
+.ipt-featuringTo{
+    left:33px
 }
 .add-color{
     box-sizing: border-box;
@@ -54,7 +81,7 @@ div input{
     position: relative;
     width: 80px;
     height: 30px;
-    left: 64%;
+    left: 79%;
     top:-37px;
 
     border: 2px solid #FF993C;
@@ -81,7 +108,7 @@ div input{
     position: relative;
     width: 80px;
     height: 30px;
-    left: 61%;
+    left: 79%;
     top:-32px;
 
     border: 2px solid #FF993C;
