@@ -24,11 +24,10 @@ export function Product(productId, price) {
       productId: productId.productId
     }
   });
-  console.log('in proinfo b4', typeof (price))
   useEffect(() => {
     setQueryPrice(getProduct?.data?.product.price);
     price = queryPrice;
-    console.log('in proinfo after', price)
+    //console.log('in proinfo after', price)
   }, [setQueryPrice, price, queryPrice, getProduct?.data?.product.price])
   if (getProduct.loading) return <div>Loading...</div>
   return (

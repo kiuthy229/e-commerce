@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, createRef } from 'react'
-import { useQuery, gql, useMutation } from '@apollo/client';
+import { useQuery, gql, useMutation, useLazyQuery } from '@apollo/client';
 import { Product } from './ProductInfo';
 import { Fee } from './Fee';
 import './Cart.css';
@@ -55,31 +55,30 @@ export function Cart() {
     }
   });
 
-  const [updateCustomer, updateCustomerResult] = useMutation(UPDATE_CUSTOMER);
-  const getProduct = useQuery(GET_PRODUCT, {
-    skip: !getCart.data,
-    variables: {
-      productId: getCart.data && getCart.data?.customer.items[0].productId
+  let listProduct = [];
+  const [getProduct, productResult] = useLazyQuery(GET_PRODUCT, {
+    onCompleted: data => {
+      console.log(data)
+      listProduct.push(data)
     }
   });
-  // const UseGetProduct = (productId) => useQuery(GET_PRODUCT, {
-  //   skip: !getCart.data,
-  //   variables: {
-  //     // productId: getCart.data && getCart.data?.customer.items[0].productId
-  //     productId: productId
-  //   }
-  // });
-  // const getProduct1 = useQueries(
-  //   getCart?.data?.customer?.items.map(item => {
-  //     return {
-  //       queryKey: item.productId,
-  //       queryFn: UseGetProduct(item.productId)
-  //     }
-  //   })
-  // ) || {}
+
+  const [updateCustomer, updateCustomerResult] = useMutation(UPDATE_CUSTOMER);
+
   if (getCart.loading) return <div>Loading...</div>
   if (updateCustomerResult.loading) return <div>Submitting...</div>
 
+  if (getCart.data) {
+    const productIds = getCart.data.customer.items.map(item => item.productId)
+
+    // for (var productId in productIds) {
+    //   getProduct({
+    //     variables: {
+    //       productId: productId
+    //     }
+    //   })
+    // }
+  }
 
 
   return (
@@ -172,7 +171,18 @@ export function Cart() {
 
 
                         <div><Product productId={item.productId} price={price} /></div>
+                        <button type="button" onClick={() => {
+
+                          getProduct({
+                            variables: {
+                              productId: item.productId
+                            }
+                          })
+
+
+                        }}>Get Product</button>
                       </div>
+
                     ))}
                   </div>)}
                 </FieldArray>}
@@ -198,6 +208,7 @@ export function Cart() {
             >
               Test
             </button>
+
             <button type="submit" disabled={isSubmitting}>
               Submit
             </button>
@@ -208,4 +219,3 @@ export function Cart() {
     </Formik >
   );
 }
-{/* <CartField name={`item[${index}]`} /> */ }
