@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef, createRef } from 'react'
-import { useQuery, gql, useMutation, useLazyQuery } from '@apollo/client';
+import React, { useEffect, useState, useRef } from 'react'
+import { useQuery, gql, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { Product } from './ProductInfo';
 import { Fee } from './Fee';
 import './Cart.css';
@@ -30,6 +30,14 @@ mutation UpdateCustomer($customer: CustomerInput!){
 }
 `;
 
+const UPDATE_QUANTITY_DB = gql`
+  mutation UpdateQuantityDB($product: UpdateProductInput!) {
+    updateProduct(product: $product) {
+      id
+    }
+  }
+`;
+
 const GET_PRODUCT = gql`
   query Query($productId: ID!) {
   product(id: $productId) {
@@ -47,38 +55,62 @@ const GET_PRODUCT = gql`
 `;
 
 export function Cart() {
-  const [priceList, setPriceList] = useState([]);
+  const client = useApolloClient();
   const price = useRef(null);
   const getCart = useQuery(GET_CART, {
     variables: {
       customerId: 1
     }
   });
+  const [getLazyCart, lazyCartResult] = useLazyQuery(GET_CART);
 
-  let listProduct = [];
+  let [listProduct, setListProduct] = useState([]);
   const [getProduct, productResult] = useLazyQuery(GET_PRODUCT, {
     onCompleted: data => {
       console.log(data)
-      listProduct.push(data)
+      //setListProduct(arr => [...arr, data])
     }
   });
 
   const [updateCustomer, updateCustomerResult] = useMutation(UPDATE_CUSTOMER);
 
+  const [updateQuantityDB, QuantityDBResult] = useMutation(UPDATE_QUANTITY_DB);
+
+  useEffect(() => {
+    // async function getPrice() {
+    //   const price = await Promise.all(
+    //     getCart.data?.customer.items.map(item => {
+    //       console.log(item.productId)
+    //       getProduct({
+    //         variables: {
+    //           productId: item.productId
+    //         }
+    //       })
+    //       .then(
+    //         value => {
+    //           console.log(value)
+    //           setListProduct(arr => [...arr, value])
+    //         }
+    //       );
+    //     })
+    //   )
+    // }
+    // getPrice();
+
+    getCart.data?.customer.items.map(async item => {
+      await getProduct({
+        variables: {
+          productId: item.productId
+        }
+      })
+    })
+
+
+  }, [getProduct, getCart.data])
+
   if (getCart.loading) return <div>Loading...</div>
   if (updateCustomerResult.loading) return <div>Submitting...</div>
-
-  if (getCart.data) {
-    const productIds = getCart.data.customer.items.map(item => item.productId)
-
-    // for (var productId in productIds) {
-    //   getProduct({
-    //     variables: {
-    //       productId: productId
-    //     }
-    //   })
-    // }
-  }
+  //console.log(listProduct)
 
 
   return (
@@ -104,7 +136,52 @@ export function Cart() {
           variables: {
             customer: values.customer
           }
-        })
+        }).then(
+          (value) => {
+            getLazyCart({
+              variables: {
+                customerId: value.data.updateCustomer.id
+              }
+            }).then(
+              async (value) => {
+                for (var product of value.data.customer.items.map(item => item)) {
+                  var currentQuantity = 0;
+                  await getProduct({
+                    variables: {
+                      productId: product.productId
+                    }
+                  }).then(
+                    value => {
+                      currentQuantity = value.data.product.stock;
+                      console.log('get product: ', value)
+                    }
+                  )
+                  console.log(currentQuantity)
+                  await updateQuantityDB({
+                    variables: {
+                      product: {
+                        id: product.productId,
+                        stock: currentQuantity - product.quantity
+                      }
+                    }
+                  }).then(
+                    value => {
+                      console.log('update in db: ', value)
+                    }
+                  )
+                  console.log(currentQuantity - product.quantity)
+                }
+
+                // value.data.customer.items.map(item => {
+                //   console.log('list productid: ', item.productId)
+                // })
+
+                console.log('customer get lazy cart', value)
+              }
+            )
+            console.log('checkout success get cust id: ', value.data.updateCustomer.id);
+          }
+        )
       }}
     >
       {
@@ -208,6 +285,18 @@ export function Cart() {
             >
               Test
             </button>
+            <button type='button' onClick={() => {
+              getLazyCart({
+                variables: {
+                  customerId: 1
+                }
+              }).
+                then(
+                  value => {
+                    console.log(value)
+                  }
+                )
+            }}>test lazy cart</button>
 
             <button type="submit" disabled={isSubmitting}>
               Submit
