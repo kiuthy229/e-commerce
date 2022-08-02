@@ -10,12 +10,13 @@ import { GetColorName } from 'hex-color-to-color-name';
 
 const AddProduct = () => {
     const dropzoneStyle = {
-        width: "90%",
+        width: "400px",
         height: "auto",
         borderWidth: 2,
         borderColor: "rgb(102, 102, 102)",
         borderStyle: "dashed",
-        borderRadius: 5
+        borderRadius: 5,
+        margin:"3px 0px 3px 0px",
       };
 
     const [createProduct, {error, loading, data}] = useMutation(ADD_PRODUCT_MUTATION)
@@ -44,16 +45,31 @@ const AddProduct = () => {
                 }],
                 sizes: []
             }}
+
             validate={values => {
                 const errors = {};
                 if (!values.name) {
                   errors.name = 'Required';
                 } 
+                if (!values.price) {
+                    errors.price = 'Required';
+                }
+                if (!values.stock) {
+                    errors.stock = 'Required';
+                }
+                if (!values.colors) {
+                    errors.colors = 'Required';
+                }
+                if (values.description.length > 100) {
+                    errors.description = 'Too long description';
+                }
                 return errors;
             }}
+
             onSubmit={(values, { setSubmitting }) => {
                 setTimeout(() => {
                     alert(JSON.stringify(values, null, 2));
+                    console.log(values.sizes)
                     createProduct({
                         variables: {
                             name: values.name,
@@ -63,7 +79,9 @@ const AddProduct = () => {
                             categories: values.categories,
                             pictures: values.pictures.map((file) => file.name),
                             colors: values.colors.map((color)=>({ name: GetColorName(color.hexValue), hexValue: color.hexValue })),
-                            sizes: values.sizes.map((size) => size)
+                            sizes: values.sizes.map((size) => size),
+                            featuringFrom: values.featuringFrom,
+                            featuringTo: values.featuringTo
                         }
                       })
                     const formData = new FormData();
@@ -99,7 +117,7 @@ const AddProduct = () => {
                     handleSubmit,
                     isSubmitting,
                     setFieldValue,
-                    setField
+                    setFieldTouched
                     }) => {
                 
                 return (
@@ -107,29 +125,32 @@ const AddProduct = () => {
                         <h1 className="header">Create Product</h1>
                             <div className="nameField">
                                 <label className="lbl-name">Name</label>
-                                <input className="ipt-name" placeholder="Product name" id="name" name="name" onChange={handleChange} value={values.name}/>
+                                <input className="ipt-name" placeholder="Product name" id="name" name="name" onChange={handleChange} value={values.name} onBlur={() => setFieldTouched('name', true)}/>
                                 {errors.name && touched.name && errors.name}
                             </div>
                             
                             <div className="priceField">
                                 <label className="lbl-price">Price</label>
                                 <input className="ipt-price" placeholder="Product price" type="number" id="price" name="price" onChange={handleChange} value={values.price}/>
+                                {errors.price && touched.price && errors.price}
                             </div>
                             
                             <div className="stockField">
                                 <label className="lbl-stock">Stock</label>
                                 <input className="ipt-stock" placeholder="Stock" type="number" id="stock" name="stock" onChange={handleChange} value={values.stock}/>
+                                {errors.stock && touched.stock && errors.stock}
                             </div>
 
                             <div className="colorField">
                                 <label className="lbl-color">Colors</label>
-                                <div style={{width:"250px", display: "flex", flexWrap: "wrap"}}>
+                                <div style={{width:"300px", display: "flex", flexWrap: "wrap"}} >
                                     {colorsArray.map((color, index) => {
                                         return (<span key={index}>
                                                     <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={handleChange}/>
                                                 </span>        
                                     )})}      
-                                </div>                         
+                                </div>  
+                                {errors.colors && touched.colors && errors.colors}                       
                                 <p className="add-color" onClick={AddColor}>Add color</p>
                             </div>
 
@@ -146,6 +167,7 @@ const AddProduct = () => {
                             <div className="descriptionField">
                                 <label className="lbl-description">Description</label>
                                 <input className="ipt-description" placeholder="Description" id="description" name="description" onChange={handleChange} value={values.description}/>
+                                {errors.description && touched.description && errors.description}
                             </div>
                             
                             <div className="categoriesField">
@@ -155,14 +177,12 @@ const AddProduct = () => {
                             
                             <div className="picturesField">
                                 <label className="lbl-pictures">Pictures</label>
-                                {/* <input className="ipt-pictures" placeholder="Pictures" type="file" id="pictures" name="pictures" onChange={handleChange} value={values.pictures}/> */}
                                 <Dropzone  accept="image/*" onDrop={(acceptedFiles) => {
                                     // do nothing if no files
                                     if (acceptedFiles.length === 0) { return; }
 
                                     // on drop we add to the existing files
                                     setFieldValue("pictures", values.pictures.concat(acceptedFiles));
-                                    setField("pictures", values.pictures.concat(acceptedFiles));
                                     }}>
                                     {({getRootProps, getInputProps, isDragActive, isDragReject, acceptedFiles, rejectedFiles }) => {
                                         if (isDragActive) {
@@ -196,12 +216,12 @@ const AddProduct = () => {
 
                             <div>
                                 <label className="">Featuring From</label>
-                                <input className="" type="date"/>
+                                <input className="ipt-featuringFrom" type="date" format="dd/mm/yyyy"  name="featuringFrom" onChange={handleChange} value={values.featuringFrom}/>
                             </div>
 
                             <div>
                                 <label className="">Featuring To</label>           
-                                <input className="" type="date"/>
+                                <input className="ipt-featuringTo" type="date" format="dd/mm/yyyy" name="featuringTo" onChange={handleChange} value={values.featuringTo}/>
                             </div>
 
                             <div>
