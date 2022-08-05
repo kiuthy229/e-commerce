@@ -6,12 +6,14 @@ import PostImage from "./pages/owner/PostImage";
 import {Checkout} from "./pages/checkout/index.jsx";
 import {BrowserRouter, Routes, Route} from "react-router-dom"
 import UpdateProduct from "./pages/owner/UpdateProduct/UpdateProduct";
+import MainPage from "./pages/Main/Main";
 
 function App() {
   return (
       <div className="App">        
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<MainPage/>}/>
             <Route path="/addproduct" element={<AddProduct/>}/>
             <Route path="/postimage" element={<PostImage/>}></Route>
             <Route path="update" element={<UpdateProduct/>}></Route>

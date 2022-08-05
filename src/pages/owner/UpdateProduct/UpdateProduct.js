@@ -32,6 +32,7 @@ const UpdateProduct = (props) => {
     const [colorsArrayLength, setColorsArrayLength] = useState([])
     const [picturesArray, setPicturesArray] = useState([])
     const [product, setProduct] = useState({})
+    var sizesArrayCopy = []
 
     useEffect(()=>{     
         if (data) {
@@ -46,6 +47,18 @@ const UpdateProduct = (props) => {
         setSizesArrayLength((array)=>[...array,""])
         console.log(sizesArrayLength)
     }
+    const RemoveDefaultSize = (index) => {
+        // console.log(sizesArray)
+        // console.log(sizesArray[index])
+        sizesArrayCopy = [...sizesArray]
+        console.log(sizesArrayCopy[index])
+        sizesArrayCopy.splice(index,1)
+        setSizesArray(sizesArrayCopy)
+    }
+    const RemoveSize = (index) => {
+        sizesArrayLength.splice(index,1)
+        setSizesArrayLength(sizesArrayLength)
+    }
     const AddColor = () =>{ 
         setColorsArrayLength((array)=>[...array,""])
         console.log(colorsArrayLength)
@@ -54,16 +67,13 @@ const UpdateProduct = (props) => {
         <div className="form-update">
                 <Formik
                     initialValues= {{
-                        name: '',
-                        price: 0,
-                        stock: 0,
+                        name: product.name,
+                        price: parseInt(product.price),
+                        stock: parseInt(product.stock),
                         description: '',
                         categories: '',
                         pictures: [],
-                        colors: [{
-                            name:null,
-                            hexValue:null
-                        }],
+                        colors: product.colors,
                         sizes: [],
                         featuringFrom:'',
                         featuringTo:''
@@ -71,10 +81,17 @@ const UpdateProduct = (props) => {
 
                     onSubmit={(values, { setSubmitting }) => {
                         setTimeout(() => {
-                            alert(JSON.stringify(values, null, 2));
-                            console.log(values.pictures)
-                            console.log(values.colors)
-                            console.log(values.sizes)
+                            alert(JSON.stringify(product, null, 2));
+                            var colorsUpdate = []
+
+                            if(values.colors)
+                            {
+                                colorsUpdate = values.colors.map((color)=>({ name: GetColorName(color.hexValue), hexValue: color.hexValue })).concat(colorsArray.map((color)=>({ name: GetColorName(color.hexValue), hexValue: color.hexValue })))
+                            }
+                            else if(!values.colors){
+                                colorsUpdate = colorsArray.map((color)=>({ name: GetColorName(color.hexValue), hexValue: color.hexValue }))
+                            }
+
                             updateProduct({
                                 variables: {
                                     id:product.id,
@@ -84,8 +101,7 @@ const UpdateProduct = (props) => {
                                     description: product.description,
                                     categories: product.categories,
                                     pictures: values.pictures.map((file) => file.name).concat(picturesArray.map((file) => file)),
-                                    //concat colorsArray làm cho màu ko update vẫn +1
-                                    colors: values.colors.map((color)=>({ name: GetColorName(color.hexValue), hexValue: color.hexValue })).concat(colorsArray.map((color)=>({ name: GetColorName(color.hexValue), hexValue: color.hexValue }))),
+                                    colors: colorsUpdate,
                                     sizes: values.sizes.map((size) => size).concat(sizesArray.map((size) => size)),
                                     featuringFrom: product.featuringFrom,
                                     featuringTo: product.featuringTo
@@ -117,19 +133,20 @@ const UpdateProduct = (props) => {
                         props.setCloseUpdate(true)
                     }}
                     >
-                    {({     values,
-                            errors,
-                            touched,
-                            handleBlur,
-                            handleSubmit,
-                            isSubmitting,
-                            setFieldValue
-                            }) => {
+                    {({ values,
+                        errors,
+                        touched,
+                        handleBlur,
+                        handleSubmit,
+                        isSubmitting,
+                        setFieldValue
+                        }) => {
                         
                         const handleChange = (event) => {
                             const name = event.target.name;
                             const value = event.target.value;
                             setProduct(values => ({...values, [name]: value}))
+                            console.log(product)
                         }
                         
                         return (
@@ -137,17 +154,17 @@ const UpdateProduct = (props) => {
                                 <h1 className="header-update">Update</h1>
                                     <div className="nameField">
                                         <label className="lbl-name">Name</label>
-                                        <input className="upt-name" placeholder="Product name" name="name" onChange={handleChange} value={product.name}/>
+                                        <input className="upt-name" placeholder="Product name" name="name" onChange={handleChange} defaultValue={product.name}/>
                                     </div>
                                     
                                     <div className="priceField">
                                         <label className="lbl-price">Price</label>
-                                        <input className="upt-price" placeholder="Product price" type="number" name="price" onChange={handleChange} value={product.price}/>
+                                        <input className="upt-price" placeholder="Product price" type="number" name="price" onChange={handleChange} defaultValue={product.price}/>
                                     </div>
                                     
                                     <div className="stockField">
                                         <label className="lbl-stock">Stock</label>
-                                        <input className="upt-stock" placeholder="Stock" type="number" name="stock" onChange={handleChange} value={product.stock}/>
+                                        <input className="upt-stock" placeholder="Stock" type="number" name="stock" onChange={handleChange} defaultValue={product.stock}/>
                                     </div>
 
                                     <div className="colorField">
@@ -155,7 +172,7 @@ const UpdateProduct = (props) => {
                                         <div style={{width:"300px", display: "flex", flexWrap: "wrap"}} >
                                             {colorsArray.map((color, index) => {
                                                 return (<span key={index}>
-                                                            <input className="ipt-color-hex" type="color" onChange={(e) => {setFieldValue(`colors[${index}].hexValue`, e.target.value)}} defaultValue={color.hexValue}/>
+                                                            <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={(e) => {setFieldValue(`colors[${index}].hexValue`, e.target.value)}} defaultValue={color.hexValue}/>
                                                         </span>        
                                             )})}  
                                             {colorsArrayLength.map((color, index) => {
@@ -171,12 +188,14 @@ const UpdateProduct = (props) => {
                                         <label className="lbl-sizes">Sizes</label>
                                             {sizesArray.map((size, index) => {
                                                 return (<div key={index}>
-                                                            <FastField className="upt-sizes" placeholder="Sizes" onChange={(e) => {setFieldValue(`sizes[${index}]`, e.target.value)}} defaultValue={size}/>
+                                                            <FastField className="upt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={(e) => {setFieldValue(`sizes[${index}]`, e.target.value)}} defaultValue={size}/>
+                                                            <p className="remove-btn" onClick={()=>RemoveDefaultSize(index)}>remove</p>
                                                         </div>        
                                             )})}
                                             {sizesArrayLength.map((size, index) => {
                                                 return (<div key={index}>
                                                             <FastField className="upt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={(e) => {setFieldValue(`sizes[${index}]`, e.target.value)}}/>
+                                                            <p className="remove-btn" onClick={()=>RemoveSize(index)}>remove</p>
                                                         </div>        
                                             )})}                          
                                         <p className="add-size" onClick={AddSize}>Add Size</p>

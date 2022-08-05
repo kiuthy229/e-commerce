@@ -26,6 +26,10 @@ const AddProduct = () => {
     const AddSize = () =>{ 
         setSizesArray((array)=>[...array,""])
     }
+    const RemoveSize = (index) => {
+        sizesArray.splice(index,1)
+        setSizesArray(sizesArray)
+    }
     const AddColor = () =>{ 
         setColorsArray((array)=>[...array,""])
     }
@@ -69,7 +73,6 @@ const AddProduct = () => {
             onSubmit={(values, { setSubmitting }) => {
                 setTimeout(() => {
                     alert(JSON.stringify(values, null, 2));
-                    console.log(values.sizes)
                     createProduct({
                         variables: {
                             name: values.name,
@@ -159,6 +162,7 @@ const AddProduct = () => {
                                 {sizesArray.map((size, index) => {
                                     return (<div key={index}>
                                                 <FastField className="ipt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={handleChange}/>
+                                                <button onClick={()=>RemoveSize(index)}>remove</button>
                                             </div>        
                                 )})}                               
                                 <p className="add-size" onClick={AddSize}>Add Size</p>

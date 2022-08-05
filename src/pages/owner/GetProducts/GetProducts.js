@@ -13,14 +13,12 @@ const GetProducts = () => {
     const [products, setProducts] = useState([])
     const [openUpdate,setOpenUpdate] = useState(false)
     const [productId, setProductId] = useState(0)
-    
-    const [reducerValue, forceUpdate] = useReducer( x=> x+1,0)
 
     useEffect(()=>{     
         if (data) {
             setProducts(data.products)
         }
-    }, [data, reducerValue])
+    }, [data])
 
     const RemoveProduct = ( productID) => {
         // console.log(productID)
@@ -39,7 +37,7 @@ const GetProducts = () => {
         backgroundColor: "#EAF1F8",
         border: "0.5px solid #919DBA",
         borderRadius: "4px",
-        width: "30px",
+        width: "15px",
         height: "15px",
         margin:"2px",
         fontSize: "12px",
@@ -62,7 +60,49 @@ const GetProducts = () => {
 
     return (
         <div className="products-list" disabled={openUpdate==true}>
-            <input className="search" type="text" placeholder="Find products by name"/>
+
+        {products &&
+            products.map((product) =>
+            <div class="card" key={product.id}>
+                <div class="left">
+                    <img style={{width:"100%",height:"100%"}} src={process.env.PUBLIC_URL + 'upload-images/' + product.pictures[0]}/>
+                    <i class="fa fa-long-arrow-left"></i>
+                    <i class="fa fa-long-arrow-right"></i>
+                </div>
+                <div class="right">
+                    <div class="product-info">
+                        <div class="product-name">
+                                    <h1>{product.name}</h1>
+                        </div>
+                        <div class="details">
+                            <h3>{product.description}</h3>
+                            <h4><span class="fa fa-dollar"></span>$ {product.price}</h4>
+                        </div>
+                        <ul>
+                            <li>SIZE</li>
+                            {   product.sizes.map((size) => <li className="bg"><i>{size}</i></li>)}
+                        </ul>
+                        <ul>
+                            <li>COLOR</li>
+                            {product.colors.map((color)=>(  <span key={color.hexValue}>
+                                                                        <input className="show-color" type="color" defaultValue={color.hexValue} disabled/>
+                                                                    </span>
+                            ))}
+                        </ul>
+                        <button className="update-product-btn" onClick={()=>{openPopupUpdate(product.id)}}>
+                            <img src={edit}/>
+                            Update
+                        </button>
+                        <button className="remove-product-btn" onClick={()=>{RemoveProduct(product.id)}}>
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
+        
+
+            {/* <input className="search" type="text" placeholder="Find products by name"/>
             <button className="filter-btn">
                 Filter
             </button>
@@ -108,7 +148,7 @@ const GetProducts = () => {
                                     )
                                 }
                             </td>
-                            <td style={{width:"100px"}}>
+                            <td style={{width:"140px", display: "flex", flexWrap:"wrap"}}>
                                 {   product.sizes.map((size) => <span style={sizeTag}><i>{size}</i></span>)}
                             </td>
                             <td>{product.featuringFrom}</td>
@@ -127,11 +167,11 @@ const GetProducts = () => {
                         </tr> 
                 )}
 
-            </table>
+            </table> */}
             {openUpdate &&
-                    <UpdateProduct  onClose={togglePopupUpdate} 
-                                    setCloseUpdate={togglePopupUpdate} 
-                                    productID={productId} />
+                     <UpdateProduct  onClose={togglePopupUpdate} 
+                                     setCloseUpdate={togglePopupUpdate} 
+                                     productID={productId} />
             }
         </div>
      );
