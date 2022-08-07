@@ -5,11 +5,42 @@
 .icon_1 {
     padding-left: 10px;
 }
+
+.cusID{
+  position: relative;
+  left: 30%;
+  top: -20px;
+  border-radius: 8px;
+  padding: 5px 3px 5px 4px;
+  width: 400px;
+  height: 34px;
+  border: 1px solid;
+}
+.cusID-submit-btn{
+  position: relative;
+  top:-20px;
+  left: 31%;
+  height: 34px;
+  width: 80px;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 5px;
+  font-size: 13px;
+  background-color: #FFFFFF;
+  color:#FF993C ;
+  
+  font-weight: 700;
+
+  border: 2px solid #FF993C;
+  border-radius: 8px;
+  cursor: pointer;
+}
 .banner_section {
     width: 100%;
     float: left;
-    background: linear-gradient(110deg, #c9b88a 55%, rgba(60, 90, 90, 0) 55%), url(../../common/assets/banner-bg.jpg);
+    background: linear-gradient(110deg, #c9b88a 55%, rgba(60, 90, 90, 0) 55%), url(../../common/assets/banner-bg.jpg) 100% 50%;
     position: relative;
+    top: 42px;
     padding-bottom: 90px;
 }
 .banner_taital {
@@ -115,7 +146,7 @@
     padding-top: 330px;
 }
 
-.movie_text {
+.des_text {
     width: 100%;
     float: left;
     font-size: 16px;
@@ -140,11 +171,6 @@
     right: -20px;
     width: 100px;
     top: 48px;
-}
-
-.movie_main {
-    width: 100%;
-    display: flex;
 }
 .mins_text {
     width: 100%;

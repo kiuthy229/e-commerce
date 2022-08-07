@@ -6,6 +6,7 @@ import { REMOVE_PRODUCT_MUTATION } from "../../../data/mutations/remove-product"
 import { useMutation } from "@apollo/client/react/hooks";
 import UpdateProduct from "../UpdateProduct/UpdateProduct";
 import './GetProducts.css'
+import NavBar from "../../../common/navbar/NavBar";
 
 const GetProducts = () => {
     const {error, loading, data} = useQuery(LOAD_PRODUCTS)
@@ -13,6 +14,16 @@ const GetProducts = () => {
     const [products, setProducts] = useState([])
     const [openUpdate,setOpenUpdate] = useState(false)
     const [productId, setProductId] = useState(0)
+    const [customerID, setCustomerID] = useState(() => {
+        // getting stored value
+        const saved = window.localStorage.getItem("customerID");
+        const initialValue = JSON.parse(saved);
+        return initialValue || "";
+      });
+
+    useEffect(()=>{
+        console.log(customerID)
+    },[customerID])
 
     useEffect(()=>{     
         if (data) {
@@ -60,7 +71,6 @@ const GetProducts = () => {
 
     return (
         <div className="products-list" disabled={openUpdate==true}>
-
         {products &&
             products.map((product) =>
             <div class="card" key={product.id}>
@@ -100,7 +110,12 @@ const GetProducts = () => {
                 </div>
             </div>
         )}
-        
+
+        {openUpdate &&
+                     <UpdateProduct  onClose={togglePopupUpdate} 
+                                     setCloseUpdate={togglePopupUpdate} 
+                                     productID={productId} />
+        }
 
             {/* <input className="search" type="text" placeholder="Find products by name"/>
             <button className="filter-btn">
@@ -168,11 +183,7 @@ const GetProducts = () => {
                 )}
 
             </table> */}
-            {openUpdate &&
-                     <UpdateProduct  onClose={togglePopupUpdate} 
-                                     setCloseUpdate={togglePopupUpdate} 
-                                     productID={productId} />
-            }
+
         </div>
      );
 }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {Fragment, useEffect, useState, useCallback} from "react";
 import { UPDATE_PRODUCT_MUTATION } from "../../../data/mutations/update-product";
 import { useMutation, useQuery } from "@apollo/client/react/hooks";
 import "./UpdateProduct.css"
@@ -32,7 +32,6 @@ const UpdateProduct = (props) => {
     const [colorsArrayLength, setColorsArrayLength] = useState([])
     const [picturesArray, setPicturesArray] = useState([])
     const [product, setProduct] = useState({})
-    var sizesArrayCopy = []
 
     useEffect(()=>{     
         if (data) {
@@ -43,26 +42,27 @@ const UpdateProduct = (props) => {
         }
     }, [data])
 
-    const AddSize = () =>{ 
+    const AddSize = useCallback(() => {
         setSizesArrayLength((array)=>[...array,""])
         console.log(sizesArrayLength)
-    }
-    const RemoveDefaultSize = (index) => {
-        // console.log(sizesArray)
-        // console.log(sizesArray[index])
-        sizesArrayCopy = [...sizesArray]
-        console.log(sizesArrayCopy[index])
+    },[sizesArrayLength]);
+
+    const RemoveDefaultSize = useCallback((index) => {
+        const sizesArrayCopy = [...sizesArray]
         sizesArrayCopy.splice(index,1)
-        setSizesArray(sizesArrayCopy)
-    }
-    const RemoveSize = (index) => {
-        sizesArrayLength.splice(index,1)
-        setSizesArrayLength(sizesArrayLength)
-    }
-    const AddColor = () =>{ 
+        setSizesArray(sizesArrayCopy);
+    }, [sizesArray]);
+    
+    const RemoveSize = useCallback((index) => {
+        const sizesArrayLengthCopy = [...sizesArrayLength]
+        sizesArrayLengthCopy.splice(index,1)
+        setSizesArrayLength(sizesArrayLengthCopy)
+    }, [sizesArrayLength]);
+
+    const AddColor = useCallback(() => {
         setColorsArrayLength((array)=>[...array,""])
         console.log(colorsArrayLength)
-    }
+    },[colorsArrayLength]);
     return (
         <div className="form-update">
                 <Formik
@@ -74,7 +74,7 @@ const UpdateProduct = (props) => {
                         categories: '',
                         pictures: [],
                         colors: product.colors,
-                        sizes: [],
+                        sizes: sizesArray,
                         featuringFrom:'',
                         featuringTo:''
                     }}
@@ -152,24 +152,20 @@ const UpdateProduct = (props) => {
                         return (
                             <Form onSubmit={handleSubmit} className="update-popup">
                                 <h1 className="header-update">Update</h1>
-                                    <div className="nameField">
+                                    <div className="update-nameField">
                                         <label className="lbl-name">Name</label>
                                         <input className="upt-name" placeholder="Product name" name="name" onChange={handleChange} defaultValue={product.name}/>
-                                    </div>
-                                    
-                                    <div className="priceField">
+
                                         <label className="lbl-price">Price</label>
                                         <input className="upt-price" placeholder="Product price" type="number" name="price" onChange={handleChange} defaultValue={product.price}/>
-                                    </div>
-                                    
-                                    <div className="stockField">
+
                                         <label className="lbl-stock">Stock</label>
                                         <input className="upt-stock" placeholder="Stock" type="number" name="stock" onChange={handleChange} defaultValue={product.stock}/>
                                     </div>
 
-                                    <div className="colorField">
+                                    <div className="update-colorField">
                                         <label className="lbl-color">Colors</label>
-                                        <div style={{width:"300px", display: "flex", flexWrap: "wrap"}} >
+                                        <div style={{width:"600px", display: "flex", flexWrap: "wrap"}} >
                                             {colorsArray.map((color, index) => {
                                                 return (<span key={index}>
                                                             <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={(e) => {setFieldValue(`colors[${index}].hexValue`, e.target.value)}} defaultValue={color.hexValue}/>
@@ -181,32 +177,32 @@ const UpdateProduct = (props) => {
                                                         </span>        
                                             )})}
                                         </div>                       
-                                        <p className="add-color" onClick={AddColor}>Add color</p>
+                                        <input type="button" className="add-color" onClick={AddColor} value="Add Color"/>
                                     </div>
 
                                     <div className="sizesField">
-                                        <label className="lbl-sizes">Sizes</label>
+                                        <label className="lbl-update-sizes">Sizes</label>
+                                        <div style={{width:"600px", display: "flex", flexWrap: "wrap"}}>
                                             {sizesArray.map((size, index) => {
-                                                return (<div key={index}>
-                                                            <FastField className="upt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={(e) => {setFieldValue(`sizes[${index}]`, e.target.value)}} defaultValue={size}/>
-                                                            <p className="remove-btn" onClick={()=>RemoveDefaultSize(index)}>remove</p>
-                                                        </div>        
+                                                return (<Fragment key={index}>
+                                                            <input className="udt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={(e) => {setFieldValue(`sizes[${index}]`, e.target.value)}} value={size}/>
+                                                            <input type="button" className="remove-btn" onClick={()=>RemoveDefaultSize(index)} value="remove"/>
+                                                        </Fragment>        
                                             )})}
                                             {sizesArrayLength.map((size, index) => {
-                                                return (<div key={index}>
-                                                            <FastField className="upt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={(e) => {setFieldValue(`sizes[${index}]`, e.target.value)}}/>
-                                                            <p className="remove-btn" onClick={()=>RemoveSize(index)}>remove</p>
-                                                        </div>        
-                                            )})}                          
-                                        <p className="add-size" onClick={AddSize}>Add Size</p>
+                                                return (<Fragment key={index}>
+                                                            <input className="udt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={(e) => {setFieldValue(`sizes[${index}]`, e.target.value)}}/>
+                                                            <input type="button" className="remove-btn" onClick={()=>RemoveSize(index)} value="remove"/>
+                                                        </Fragment>        
+                                            )})} 
+                                        </div>                         
+                                        <input type="button"  className="add-size" onClick={AddSize} value="Add Size"/>
                                     </div>
                                     
                                     <div className="descriptionField">
                                         <label className="lbl-description">Description</label>
-                                        <input className="ipt-description" placeholder="Description" name="description" onChange={handleChange} value={product.description}/>
-                                    </div>
-                                    
-                                    <div className="categoriesField">
+                                        <textarea className="ipt-description" placeholder="Description" name="description" onChange={handleChange} value={product.description}/>
+
                                         <label className="lbl-categories">Categories</label>
                                         <input className="upt-categories" placeholder="Categories" name="categories" onChange={handleChange} value={product.categories}/>
                                     </div>
@@ -258,9 +254,7 @@ const UpdateProduct = (props) => {
                                     <div>
                                         <label className="">Featuring From</label>
                                         <input className="upt-featuringFrom" type="text"  name="featuringFrom" onChange={handleChange} value={product.featuringFrom}/>
-                                    </div>
 
-                                    <div>
                                         <label className="">Featuring To</label>           
                                         <input className="upt-featuringTo" type="text" name="featuringTo" onChange={handleChange} value={product.featuringTo}/>
                                     </div>
