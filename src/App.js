@@ -5,7 +5,7 @@ import AddProduct from "./pages/owner/AddProduct/AddProduct";
 import PostImage from "./pages/owner/PostImage";
 import {Checkout} from "./pages/checkout/index.jsx";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import Main from "./pages/browse/Main";
+import Main from "./pages/browse/ProductPage"
 import MainPage from "./pages/Main/Main"
 import Product from "./pages/browse/ProductDetail/ProductDetail";
 import NavBar from "./common/navbar/NavBar";
@@ -20,6 +20,7 @@ function App() {
             <Route path="/addproduct" element={<AddProduct/>}/>
             <Route path="/thithien" element={<Main/>}/>
             <Route path="/thithien2" element={<Product/>}/>
+            <Route path="/addproduct" element={<AddProduct/>}/>
             <Route path="/postimage" element={<PostImage/>}></Route>
             <Route path="/products" element={<GetProducts/>}>
               {/* <Route path="detail" element={<Page3/>}/>
