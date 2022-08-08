@@ -1,16 +1,25 @@
 import React, {useState, useEffect} from "react";
 import "./Main.css";
+import { useMutation, useQuery } from "@apollo/client";
+import { UPDATE_CUSTOMER_MUTATION } from "../../data/mutations/update-customer";
+import { GET_CUSTOMER } from "../../data/queries/get-customer";
 
 
 const MainPage = () => {
     const [customerID, setCustomerID] = useState("")
-    // useEffect(() => {
-    //     window.localStorage.setItem("customerID", JSON.stringify(customerID));
-    //   }, [customerID]);
+    const [updateCustomer, result] = useMutation(UPDATE_CUSTOMER_MUTATION)
+    const {error, loading, data} =useQuery(GET_CUSTOMER, {
+		variables: {
+			customerId:  window.localStorage.getItem("customerID")
+		},
+	})
 
     const handleSubmitCusID = () => {
         console.log("onsubmit")
         window.localStorage.setItem("customerID", JSON.stringify(customerID));
+        if(data){
+            console.log(data)
+        }
     }
 
     // useEffect(()=>{
