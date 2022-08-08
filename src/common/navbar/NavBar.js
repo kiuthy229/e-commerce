@@ -123,11 +123,11 @@ const NavBar = () => {
                                     <a className="nav-link" href="">Customer</a>
                                 </MenuItem>
                             </li>
-                            {/* <li className="nav-item">
+                            <li className="nav-item">
                                 <MenuItem>
-                                    <a className="nav-link" href="">Checkout</a>
+                                    <a className="nav-link" href="/checkout">Checkout</a>
                                 </MenuItem>
-                            </li> */}
+                            </li>
                             <li className="nav-item">
                             <MenuItem>
                                 <FaShoppingCart style={{fontSize: 20}}/>   
