@@ -39,12 +39,35 @@
   transform: translate(-50%, -50%);
   text-transform: uppercase;
   /* border-radius: 20px; */
-  
+  /* position                  : relative;
+  margin-top                : 10px;
+  text-decoration           : none;
+  display                   : flex;
+  background-color          : #ffffff;
+  border-bottom-left-radius : 2px;
+  border-bottom-right-radius: 2px;
+  box-shadow                : 0 1px 2px 0 rgb(0, 0, 0, 0.1);
+  will-change               : transform;
+  transition                : transform linear 0.1s; */
+}
+.product-card:hover {
+  box-shadow: 0 1px 20px 0 rgb(0, 0, 0, 0.05);
 }
 .product-card h1 {
   font-size: 22px;
   color: #41612c;
   margin-bottom: 4px;
+  /* margin            : 10px;
+  font-size         : 1.3rem;
+  font-weight       : 400;
+  color             : #41612c;
+  line-height       : 1.8rem;
+  height            : 3.6rem;
+  overflow          : hidden;
+  display           : block;
+  display           : -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; */
 }
 .product-card p {
   font-size: 13px;
@@ -57,10 +80,15 @@
   background-position: center;
   transition: 0.6s linear; 
   position: relative;
-  /* left: 10px;
-  right: 0px; */
+  left: 10px;
+  right: 0px;
   align-items: center;
   margin-top: 10px; 
+
+  /* padding-top        : 100%;
+  background-position: center;
+  background-size    : contain;
+  background-repeat  : no-repeat; */
 }
 .product-colors {
   margin-bottom: 40px;
@@ -106,8 +134,9 @@
 }
 .product-price {
   color: #476930;
-  font-size: 26px;
-  text-align: left;
+  /* font-size: 26px;
+  text-align: left; */
+  font-size: 1.4rem;
 }
 .product-button {
   margin-left: auto;
@@ -124,4 +153,46 @@
 .product-button:hover {
   transform: scale(1.06)
   ;
+}
+
+#slider-range .ui-slider-handle {
+  background-color: #b0b435;
+  border: 2px solid #000000;
+  border-radius: 50%;
+  cursor: pointer;
+  height: 21px;
+  top: -6px;
+  transition: none 0s ease 0s;
+  width: 30px;
+  box-shadow: 0px 0px 6.65px 0.35px rgba(0,0,0,0.15);
+}
+#slider-range .ui-slider-range {
+  background-color: #b0b435;
+  border-radius: 0;
+}
+#slider-range {
+  background: #b0b435;
+  border: medium none;
+  border-radius: 50px;
+  float: left;
+  height: 5px;
+  margin-top: 14px;
+  width: 100%;
+}
+
+.price-box-slider p{
+  clear: both;
+  margin-top: 20px;
+  display: inline-block;
+  width: 100%;
+}
+
+.price-box-slider p input{
+  margin-top: 5px;
+  width: 200px;
+}
+.price-box-slider p button{
+  border: none;
+  color: #b0b435;
+  float: right;
 }

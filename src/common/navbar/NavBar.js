@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./NavBar.css"
 import { FaShoppingCart, FaSearch } from 'react-icons/fa';
 import styled from "styled-components";
@@ -34,35 +34,7 @@ import styled from "styled-components";
 //       }
 //     })
     //return (
-        const handleSearch = () => {
-            let searchInput = document.getElementById("searchbar-input").value;
-            let elements = document.querySelectorAll(".product-name");
-            let cards = document.querySelectorAll(".card-container");
-            //loop through all elements
-            elements.forEach((element, index) => {
-              //check if text includes the search value
-              if (element.innerText.includes(searchInput.toUpperCase())) {
-                //display matching card
-                cards[index].classList.remove("hide");
-              } else {
-                //hide others
-                cards[index].classList.add("hide");
-              }
-        })
-    } 
-const SearchContainer = styled.div`
-  border: 1px solid black;
-  display: flex;
-  align-items: center;
-  margin-left: 25px;
-  padding: 5px 20px;
-  
-`;
-const Input = styled.input`
-  border: none;
-  background: none;
-
-`;
+        
 const Left = styled.div`
   flex: 1;
   display: flex;
@@ -97,13 +69,6 @@ const NavBar = () => {
         <div>
             <div className="header_section">
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                    <Left>
-                    {/* //SEARCH BAR */}
-                        <SearchContainer className="search-bar">
-                            <Input type="search" id="searchbar__input" placeholder="Search" /> 
-                            <button id="search" onClick={handleSearch}><FaSearch /></button>
-                        </SearchContainer>
-                    </Left>
                     <Right>
                         <a className="logo" href=""><img src=""/></a>
                         <div className="collapse navbar-collapse">
