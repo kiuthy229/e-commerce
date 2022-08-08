@@ -9,6 +9,7 @@ import Main from "./pages/browse/ProductPage"
 import MainPage from "./pages/Main/Main"
 import Product from "./pages/browse/ProductDetail/ProductDetail";
 import NavBar from "./common/navbar/NavBar";
+import Success from "./pages/checkout/Success";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
               <Route path=":pageName/:pageId" element={<PageVariable/>}/> */}
             </Route>       
             <Route path="/checkout" element={<Checkout/>}></Route>     
+            <Route path="/success" element={<Success/>}></Route>     
           </Routes>
         </BrowserRouter>
       </div>
