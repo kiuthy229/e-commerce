@@ -7,6 +7,7 @@ import {Checkout} from "./pages/checkout/index.jsx";
 import {BrowserRouter, Routes, Route} from "react-router-dom"
 import UpdateProduct from "./pages/owner/UpdateProduct/UpdateProduct";
 import MainPage from "./pages/Main/Main";
+import Success from "./pages/checkout/Success";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
               <Route path=":pageName/:pageId" element={<PageVariable/>}/> */}
             </Route>       
             <Route path="/checkout" element={<Checkout/>}></Route>     
+            <Route path="/success" element={<Success/>}></Route>     
           </Routes>
         </BrowserRouter>
       </div>

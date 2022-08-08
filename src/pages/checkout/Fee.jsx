@@ -19,8 +19,8 @@ export function Fee(location) {
 
     return (
         <div>
-            <div>{getFee.data?.fee.shipping}</div>
-            <div>{getFee.data?.fee.tax}</div>
+            <div>Shipping {!getFee.data?.fee.shipping ? 'Not available' : getFee.data?.fee.shipping}</div>
+            <div>Fee {!getFee.data?.fee.tax ? 'Not available' : getFee.data?.fee.tax}</div>
         </div>
 
     );
