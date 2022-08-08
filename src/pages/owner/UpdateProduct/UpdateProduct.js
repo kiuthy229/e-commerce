@@ -8,6 +8,7 @@ import Dropzone from "react-dropzone";
 import Thumb from "../AddProduct/Thumb";
 import { GetColorName } from 'hex-color-to-color-name';
 import { GET_PRODUCT } from "../../../data/queries/get-product";
+import isBefore from 'date-fns/isBefore';
 
 const UpdateProduct = (props) => {
     const dropzoneStyle = {
@@ -53,7 +54,7 @@ const UpdateProduct = (props) => {
         setSizesArray(sizesArrayCopy);
     }, [sizesArray]);
     
-    const RemoveSize = useCallback((index) => {
+    const RemoveNewSize = useCallback((index) => {
         const sizesArrayLengthCopy = [...sizesArrayLength]
         sizesArrayLengthCopy.splice(index,1)
         setSizesArrayLength(sizesArrayLengthCopy)
@@ -63,6 +64,18 @@ const UpdateProduct = (props) => {
         setColorsArrayLength((array)=>[...array,""])
         console.log(colorsArrayLength)
     },[colorsArrayLength]);
+
+    const RemoveDefaultColor = useCallback((index) => {
+        const colorsArrayCopy = [...colorsArray]
+        colorsArrayCopy.splice(index,1)
+        setColorsArray(colorsArrayCopy);
+    }, [colorsArray]);
+    
+    const RemoveNewColor = useCallback((index) => {
+        const colorsArrayLengthCopy = [...colorsArrayLength]
+        colorsArrayLengthCopy.splice(index,1)
+        setColorsArrayLength(colorsArrayLengthCopy)
+    }, [colorsArrayLength]);
     return (
         <div className="form-update">
                 <Formik
@@ -77,6 +90,14 @@ const UpdateProduct = (props) => {
                         sizes: sizesArray,
                         featuringFrom:'',
                         featuringTo:''
+                    }}
+
+                    validate = {values => {
+                        const errors = {};
+                        if (!isBefore(new Date(values.featuringFrom.toString().slice(6,10), values.featuringFrom.toString().slice(3,5) -1, values.featuringFrom.toString().slice(0,2)), new Date())){
+                            errors.featuringFrom = '“Featuring from” date should be greater or equal today'
+                        }
+                        return errors
                     }}
 
                     onSubmit={(values, { setSubmitting }) => {
@@ -168,12 +189,14 @@ const UpdateProduct = (props) => {
                                         <div style={{width:"600px", display: "flex", flexWrap: "wrap"}} >
                                             {colorsArray.map((color, index) => {
                                                 return (<span key={index}>
-                                                            <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={(e) => {setFieldValue(`colors[${index}].hexValue`, e.target.value)}} defaultValue={color.hexValue}/>
+                                                            <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={(e) => {setFieldValue(`colors[${index}].hexValue`, e.target.value)}} value={color.hexValue}/>
+                                                            <input type="button" onClick={()=>RemoveDefaultColor(index)} value="x"/>
                                                         </span>        
                                             )})}  
                                             {colorsArrayLength.map((color, index) => {
                                                 return (<span key={index}>
-                                                            <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={(e) => {setFieldValue(`colors[${index}].hexValue`, e.target.value)}}/>
+                                                            <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={(e) => {setFieldValue(`colors[${index}].hexValue`, e.target.value)}} defaultValue={color.hexValue}/>
+                                                            <input type="button" onClick={()=>RemoveNewColor(index)} value="x"/>
                                                         </span>        
                                             )})}
                                         </div>                       
@@ -191,8 +214,8 @@ const UpdateProduct = (props) => {
                                             )})}
                                             {sizesArrayLength.map((size, index) => {
                                                 return (<Fragment key={index}>
-                                                            <input className="udt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={(e) => {setFieldValue(`sizes[${index}]`, e.target.value)}}/>
-                                                            <input type="button" className="remove-btn" onClick={()=>RemoveSize(index)} value="remove"/>
+                                                            <input className="udt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={(e) => {setFieldValue(`sizes[${index}]`, e.target.value)}} defaultValue={size}/>
+                                                            <input type="button" className="remove-btn" onClick={()=>RemoveNewSize(index)} value="remove"/>
                                                         </Fragment>        
                                             )})} 
                                         </div>                         
@@ -254,6 +277,7 @@ const UpdateProduct = (props) => {
                                     <div>
                                         <label className="">Featuring From</label>
                                         <input className="upt-featuringFrom" type="text"  name="featuringFrom" onChange={handleChange} value={product.featuringFrom}/>
+                                        {errors.featuringFrom && touched.featuringFrom && errors.featuringFrom}
 
                                         <label className="">Featuring To</label>           
                                         <input className="upt-featuringTo" type="text" name="featuringTo" onChange={handleChange} value={product.featuringTo}/>

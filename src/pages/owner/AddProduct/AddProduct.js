@@ -7,6 +7,8 @@ import { Formik, Form, FastField } from "formik";
 import Dropzone from "react-dropzone";
 import Thumb from "./Thumb";
 import { GetColorName } from 'hex-color-to-color-name';
+import isBefore from 'date-fns/isBefore';
+import isAfter from 'date-fns/isAfter'
 
 const AddProduct = () => {
     const dropzoneStyle = {
@@ -67,10 +69,21 @@ const AddProduct = () => {
                 if (values.description.length > 100) {
                     errors.description = 'Too long description';
                 }
+                if (!isBefore(new Date(values.featuringFrom.toString().slice(6,10), values.featuringFrom.toString().slice(3,5) -1, values.featuringFrom.toString().slice(0,2)), new Date())){
+                    errors.featuringFrom = '“Featuring from” date should be greater or equal today'
+                }
+                if (!isAfter(new Date(values.featuringTo.toString().slice(6,10), values.featuringTo.toString().slice(3,5) -1, values.featuringTo.toString().slice(0,2)), 
+                            new Date(values.featuringFrom.toString().slice(6,10), values.featuringFrom.toString().slice(3,5) -1, values.featuringFrom.toString().slice(0,2)))){
+                    errors.featuringTo = '“Featuring to” date should be greater than “Featuring from” date'
+                }
                 return errors;
             }}
 
             onSubmit={(values, { setSubmitting }) => {
+                if (isAfter(new Date(values.featuringTo.toString().slice(6,10), values.featuringTo.toString().slice(3,5) -1, values.featuringTo.toString().slice(0,2)), 
+                            new Date(values.featuringFrom.toString().slice(6,10), values.featuringFrom.toString().slice(3,5) -1, values.featuringFrom.toString().slice(0,2)))){
+                    console.log("is after")
+                }
                 setTimeout(() => {
                     alert(JSON.stringify(values, null, 2));
                     createProduct({
@@ -220,12 +233,14 @@ const AddProduct = () => {
 
                             <div>
                                 <label className="">Featuring From</label>
-                                <input className="ipt-featuringFrom" type="date" format="dd/mm/yyyy"  name="featuringFrom" onChange={handleChange} value={values.featuringFrom}/>
+                                <input className="ipt-featuringFrom" type="text" format="dd/mm/yyyy"  name="featuringFrom" onChange={handleChange} value={values.featuringFrom}/>
+                                {errors.featuringFrom && touched.featuringFrom && errors.featuringFrom}
                             </div>
 
                             <div>
                                 <label className="">Featuring To</label>           
-                                <input className="ipt-featuringTo" type="date" format="dd/mm/yyyy" name="featuringTo" onChange={handleChange} value={values.featuringTo}/>
+                                <input className="ipt-featuringTo" type="text" format="dd/mm/yyyy" name="featuringTo" onChange={handleChange} value={values.featuringTo}/>
+                                {errors.featuringTo && touched.featuringTo && errors.featuringTo}
                             </div>
 
                             <div>
