@@ -1,7 +1,9 @@
-import { React } from 'react';
+import  React, { useState, useEffect } from 'react';
+import { useParams} from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 import { IoIosAdd, IoMdRemove } from "react-icons/io";
-//import { Add, Remove } from "@material-ui/icons";
 import styled from "styled-components";
+import { GET_PRODUCT } from "../../../data/queries/get-product";
 
 const Container = styled.div`
   margin-top: 50px;
@@ -112,28 +114,42 @@ const Button = styled.button`
 `;
 
 const Product = () => {
+  const params = useParams();
+  console.log(params.id)
+  const productID = params.id
+  const [product, setProduct] = useState({})
+  const [pictures, setPictures] = useState([])
+  const {error, loading, data} = useQuery(GET_PRODUCT, {
+		variables: {
+			productId: productID
+		},
+	})
+
+  useEffect(()=>{     
+      if (data) {
+        console.log(data)
+          setProduct(data.product)
+          setPictures(data.pictures);
+      }
+  }, [data])
+
   return (
     <Container>
+      {data && 
       <Wrapper>
         <ImgContainer>
-          <Image src="https://i.ibb.co/S6qMxwr/jean.jpg" />
+            <img src={process.env.PUBLIC_URL + 'upload-images/' + pictures[0]}/>
         </ImgContainer>
         <InfoContainer>
-          <Title>Denim Jumpsuit</Title>
-          <Desc>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            venenatis, dolor in finibus malesuada, lectus ipsum porta nunc, at
-            iaculis arcu nisi sed mauris. Nulla fermentum vestibulum ex, eget
-            tristique tortor pretium ut. Curabitur elit justo, consequat id
-            condimentum ac, volutpat ornare.
-          </Desc>
-          <Price>$ 20</Price>
+          <Title>{product.name}</Title>
+          <Desc>{product.description}</Desc>
+          <Price>$ {product.price}</Price>
           <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>
-              <FilterColor color="black" />
-              <FilterColor color="darkblue" />
-              <FilterColor color="gray" />
+              {product.colors.map((color)=>
+                  <input type="color" value={color.hexValue} disabled/>
+              )}
             </Filter>
           </FilterContainer>
           <AddContainer>
@@ -146,6 +162,7 @@ const Product = () => {
           </AddContainer>
         </InfoContainer>
       </Wrapper>
+      }
     </Container>
   );
 };

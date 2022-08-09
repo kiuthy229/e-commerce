@@ -19,7 +19,7 @@ function App() {
           <Routes>
             <Route path="/" element={<MainPage/>}/>
             <Route path="/customer" element={<CustomerProduct/>}/>
-            <Route path="/product/:id" element={<Product/>}/>
+            <Route path="/product/:id" element={<Product/>} exact/>
             <Route path="/addproduct" element={<AddProduct/>}/>
             <Route path="/postimage" element={<PostImage/>}></Route>
             <Route path="/products" element={<GetProducts/>}/>

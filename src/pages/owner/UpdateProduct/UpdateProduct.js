@@ -34,6 +34,9 @@ const UpdateProduct = (props) => {
     const [colorsArrayLength, setColorsArrayLength] = useState([])
     const [picturesArray, setPicturesArray] = useState([])
     const [product, setProduct] = useState({})
+    const [selectedFiles, setSelectedFiles ] = useState([]);
+    const [selectedPictures, setSelectedPictures ] = useState([]);
+    const [pictures, setPictures] = useState([]);
 
     useEffect(()=>{     
         if (data) {
@@ -122,7 +125,7 @@ const UpdateProduct = (props) => {
                                     stock: parseInt(product.stock),
                                     description: product.description,
                                     categories: product.categories,
-                                    pictures: values.pictures.map((file) => file.name).concat(picturesArray.map((file) => file)),
+                                    pictures: selectedPictures.concat(picturesArray.map((file) => file)),
                                     colors: colorsUpdate,
                                     sizes: values.sizes.map((size) => size).concat(sizesArray.map((size) => size)),
                                     featuringFrom: product.featuringFrom,
@@ -130,7 +133,7 @@ const UpdateProduct = (props) => {
                                 }
                             })
                             const formData = new FormData();
-                            values.pictures.filter((file) =>{formData.append("pictures", file)});
+                            pictures.filter((file) =>{formData.append("pictures", file)});
                             axios.post("http://localhost:3001/upload", formData, {
                                 headers: {
                                     "content-type": "multipart/form-data",
@@ -170,6 +173,28 @@ const UpdateProduct = (props) => {
                             setProduct(values => ({...values, [name]: value}))
                             console.log(product)
                         }
+
+                        const handleImageChange = (e) => {
+                            if (e.target.files) {
+                                const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
+                                const picturesArray = Array.from(e.target.files).map((file) => file.name);
+                                const pictures = Array.from(e.target.files).map((file) => file);
+                    
+                                setSelectedFiles((prevImages) => prevImages.concat(filesArray));
+                                setSelectedPictures((prevImages) => prevImages.concat(picturesArray))
+                                setPictures((prevImages) => prevImages.concat(pictures));
+                                Array.from(e.target.files).map(
+                                    (file) => URL.revokeObjectURL(file) // avoid memory leak
+                                );
+                            }
+                        };
+                    
+                        const renderPhotos = (source) => {
+                            console.log('source: ', source);
+                            return source.map((photo) => {
+                                return <img src={photo} alt="" key={photo}/>;
+                            });
+                        };
                         
                         return (
                             <Form onSubmit={handleSubmit} className="update-popup">
@@ -253,48 +278,19 @@ const UpdateProduct = (props) => {
                                         <input className="update-ipt-categories" placeholder="Categories" name="categories" onChange={handleChange} value={product.categories}/>
                                     </div>
                                     
-                                    <div className="picturesField">
-                                        <label className="update-lbl-pictures">Pictures</label>
-
-                                        <Dropzone  accept="image/*" onDrop={(acceptedFiles) => {
-                                            // do nothing if no files
-                                            if (acceptedFiles.length === 0) { return; }
-
-                                            // on drop we add to the existing files
-                                            setFieldValue("pictures", values.pictures.concat(acceptedFiles));
-                                            }}>
-                                            {({getRootProps, getInputProps, isDragActive, isDragReject, acceptedFiles, rejectedFiles }) => {
-                                                if (isDragActive) {
-                                                return "This file is authorized";
-                                                }
-
-                                                if (isDragReject) {
-                                                return "This file is not authorized";
-                                                }
-
-                                                if (picturesArray.length === 0) { 
-                                                return <section style={dropzoneStyle}>
-                                                            <div {...getRootProps()}>
-                                                            <input {...getInputProps()}/>
-                                                            <p>Drag and drop some files here, or click to select files</p>
-                                                            </div>
-                                                        </section>
-                                                }
-                                                if (picturesArray.length !== 0) { 
-                                                return  <section style={dropzoneStyle}>
-                                                        {picturesArray.map((pic)=>
-                                                            <img style={{padding:"2px", borderRadius:"5px", border:"1px solid #000000", margin:"1px", height:"20%", width:"20%"}} src={process.env.PUBLIC_URL + 'upload-images/' + pic}/>
-                                                        )}
-                                                        {values.pictures.map((file, i) => (<Thumb key={i} file={file} />))}
-                                                        <div {...getRootProps()}>
-                                                        <input {...getInputProps()}/>
-                                                        <p>Drag and drop some files here, or click to select files</p>
-                                                        </div>
-                                                        </section>
-                                                }
-                                            }}
-                                        </Dropzone>
-
+                                    <div>
+                                        <input type="file" id="file" multiple onChange={handleImageChange}/>
+                                        <div className="label-holder">
+                                            <label htmlFor="file" className="label">
+                                                <i className="material-icons">+</i>
+                                            </label>
+                                        </div>
+                                        <div className="result">
+                                            {picturesArray.map((pic)=>
+                                                <img style={{padding:"2px", borderRadius:"5px", border:"1px solid #000000", margin:"1px", height:"20%", width:"20%"}} src={process.env.PUBLIC_URL + 'upload-images/' + pic}/>
+                                            )}
+                                            {renderPhotos(selectedFiles)}
+                                        </div>
                                     </div>
 
                                     <div>

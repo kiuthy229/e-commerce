@@ -71,78 +71,75 @@ export const Viewallproducts = () => {
         <div className="col-3">
           {/*Side-bar*/}
           <SearchContainer className="search-bar">
-        <Input
-          type="search"
-          id="searchbar__input"
-          placeholder="Search"
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button id="search" onClick={handleSearch}>
-          <FaSearch />
-        </button>
-      </SearchContainer>
+            <Input
+              type="search"
+              id="searchbar__input"
+              placeholder="Search"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button id="search" onClick={handleSearch}>
+              <FaSearch />
+            </button>
+          </SearchContainer>
           <Filter/>
         </div>
+
         <div className="col-9">
           <div className="card-container">
             {products &&
               !searchClicked &&
               products.map((product) => (
-                <div class="product-card">
-                  <div>
-                    <img
-                      class="product-pic"
-                      src={
-                        process.env.PUBLIC_URL +
-                        "upload-images/" +
-                        product.pictures[0]
-                      }
-                    />
-                  </div>
-                  <h1 class="product-name">{product.name}</h1>
-                  <div class="product-colors"></div>
-                  <div class="product-price">${product.price}</div>
-                  <p>
+                <a href={`/product/${product.id}`}>
+                  <div class="product-card">
                     <div>
-                      <button
-                        className="product-button"
-                        onClick={() => OpenDetails(product.id)}
-                      >
-                        Add to Cart
-                      </button>
+                      <img class="product-pic" src={process.env.PUBLIC_URL + "upload-images/" + product.pictures[0]}/>
                     </div>
-                  </p>
-                </div>
+                    <h1 class="product-name">{product.name}</h1>
+                    <div class="product-colors"></div>
+                    <div class="product-price">${product.price}</div>
+                    <p>
+                      <div>
+                        <button className="product-button" onClick={() => OpenDetails(product.id)}>
+                          Add to Cart
+                        </button>
+                      </div>
+                    </p>
+                  </div>
+                </a>
+              ))}
+
+            {searchClicked &&
+              searchResult.map((product) => (
+                <a href="/product/6154c746-25df-4977-b3c4-ba7362a50043">
+                  <div class="product-card">
+                      <div>
+                        <img
+                          class="product-pic"
+                          src={
+                            process.env.PUBLIC_URL +
+                            "upload-images/" +
+                            product.pictures[0]
+                          }
+                        />
+                      </div>
+                      <h1 class="product-name">{product.name}</h1>
+                      <div class="product-colors"></div>
+                      <div class="product-price">${product.price}</div>
+                      <p>
+                        <div>
+                          <button
+                            className="product-button"
+                            onClick={() => OpenDetails(product.id)}
+                          >
+                            Add to Cart
+                          </button>
+                        </div>
+                      </p>
+                  </div>
+                </a>
               ))}
           </div>
-          {searchClicked &&
-            searchResult.map((product) => (
-              <div class="product-card">
-                  <div>
-                    <img
-                      class="product-pic"
-                      src={
-                        process.env.PUBLIC_URL +
-                        "upload-images/" +
-                        product.pictures[0]
-                      }
-                    />
-                  </div>
-                  <h1 class="product-name">{product.name}</h1>
-                  <div class="product-colors"></div>
-                  <div class="product-price">${product.price}</div>
-                  <p>
-                    <div>
-                      <button
-                        className="product-button"
-                        onClick={() => OpenDetails(product.id)}
-                      >
-                        Add to Cart
-                      </button>
-                    </div>
-                  </p>
-                </div>
-            ))}
+
         </div>
       </div>
     </div>

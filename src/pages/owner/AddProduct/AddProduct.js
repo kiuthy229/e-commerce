@@ -27,7 +27,7 @@ const AddProduct = () => {
     const [sizesArray, setSizesArray] = useState([""])
     const [colorsArray, setColorsArray] = useState([""])
     const [selectedFiles, setSelectedFiles ] = useState([]);
-    const [picturesSelected, setPicturesSelected ] = useState([]);
+    const [selectedPictures, setSelectedPictures ] = useState([]);
     const [pictures, setPictures] = useState([]);
 
     const AddSize = () =>{ 
@@ -107,7 +107,7 @@ const AddProduct = () => {
                             stock: parseInt(values.stock),
                             description: values.description,
                             categories: values.categories,
-                            pictures: picturesSelected,
+                            pictures: selectedPictures,
                             colors: values.colors.map((color)=>({ name: GetColorName(color.hexValue), hexValue: color.hexValue })),
                             sizes: values.sizes.map((size) => size),
                             featuringFrom: values.featuringFrom,
@@ -156,7 +156,7 @@ const AddProduct = () => {
                                 const picturesArray = Array.from(e.target.files).map((file) => file.name);
                                 const pictures = Array.from(e.target.files).map((file) => file);
                     
-                                setPicturesSelected((prevImages) => prevImages.concat(picturesArray))
+                                setSelectedPictures((prevImages) => prevImages.concat(picturesArray))
                                 setSelectedFiles((prevImages) => prevImages.concat(filesArray));
                                 setPictures((prevImages) => prevImages.concat(pictures));
                                 Array.from(e.target.files).map(
@@ -242,45 +242,6 @@ const AddProduct = () => {
                                 </div>
                                 <div className="result">{renderPhotos(selectedFiles)}</div>
                             </div>
-                            
-                            {/* <div className="picturesField">
-                                <label className="lbl-pictures">Pictures</label>
-                                <Dropzone  accept="image/*" onDrop={(acceptedFiles) => {
-                                    // do nothing if no files
-                                    if (acceptedFiles.length === 0) { return; }
-
-                                    // on drop we add to the existing files
-                                    setFieldValue("pictures", values.pictures.concat(acceptedFiles));
-                                    }}>
-                                    {({getRootProps, getInputProps, isDragActive, isDragReject, acceptedFiles, rejectedFiles }) => {
-                                        if (isDragActive) {
-                                        return "This file is authorized";
-                                        }
-
-                                        if (isDragReject) {
-                                        return "This file is not authorized";
-                                        }
-
-                                        if (values.pictures.length === 0) { 
-                                        return <section style={dropzoneStyle}>
-                                                    <div {...getRootProps()}>
-                                                    <input {...getInputProps()}/>
-                                                    <p>Drag and drop some files here, or click to select files</p>
-                                                    </div>
-                                                </section>
-                                        }
-                                        if (values.pictures.length !== 0) { 
-                                        return  <section style={dropzoneStyle}>
-                                                {values.pictures.map((file, i) => (<Thumb key={i} file={file} />))}
-                                                <div {...getRootProps()}>
-                                                <input {...getInputProps()}/>
-                                                <p>Drag and drop some files here, or click to select files</p>
-                                                </div>
-                                                </section>
-                                        }
-                                    }}
-                                </Dropzone>
-                            </div> */}
 
                             <div>
                                 <label className="lbl-featuringFrom">Featuring From</label>
