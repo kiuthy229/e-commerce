@@ -51,7 +51,7 @@
   font-weight: bold;
   font-size: 22px;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  margin-top: 0px;
+  margin-top: 5px;
   display: inline-block;
   width: 250px;
   white-space: nowrap;
@@ -116,17 +116,17 @@
 .product-button {
   justify-content: center;
   align-items: center;
-  margin-left: 19px;
+  margin-left: 15px;
   margin-top: 8px;
   color: #76a136;
   border: 2px solid;
   outline: none;
-  padding: 5px 80px;
+  padding: 5px 70px;
   background: none;
   border-radius: 20px;
   transition: 0.4s linear;
   display: block;
-  font-size: 15px;
+  font-size: 17px;
   position: relative;
 }
 .product-button:hover {

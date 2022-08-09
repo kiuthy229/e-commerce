@@ -6,7 +6,7 @@ export const Filter = () => {
   return (
     <section id="sidebar">
       <div>
-        <h6 class="p-1 border-bottom">Trending search</h6>
+        <h6 class="p-1 border-bottom">Categories</h6>
         <ul>
           <li>
             <a href="#">Dresses</a>
@@ -29,8 +29,8 @@ export const Filter = () => {
         </ul>
       </div>
       <div>
-        <h6 class="p-1 border-bottom">Filter By</h6>
-        <p class="mb-2">Color</p>
+        <h6 class="p-1 border-bottom">Color</h6>
+        {/* <p class="mb-2">Color</p> */}
         <ul class="list-group">
           <li class="list-group-item list-group-item-action mb-2 rounded">
             <a href="#">
