@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useCallback} from "react";
 import { ADD_PRODUCT_MUTATION } from "../../../data/mutations/add-product";
 import { useMutation } from "@apollo/client/react/hooks";
 import "./AddProduct.css"
@@ -28,10 +28,12 @@ const AddProduct = () => {
     const AddSize = () =>{ 
         setSizesArray((array)=>[...array,""])
     }
-    const RemoveSize = (index) => {
+
+    const RemoveSize = useCallback((index) => {
         sizesArray.splice(index,1)
-        setSizesArray(sizesArray)
-    }
+        setSizesArray(sizesArray);
+    }, [sizesArray]);
+
     const AddColor = () =>{ 
         setColorsArray((array)=>[...array,""])
     }
@@ -174,7 +176,7 @@ const AddProduct = () => {
                                 <label className="lbl-sizes">Sizes</label>
                                 {sizesArray.map((size, index) => {
                                     return (<div key={index}>
-                                                <FastField className="ipt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={handleChange}/>
+                                                <FastField className="ipt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={handleChange} defaultValue=""/>
                                                 <button onClick={()=>RemoveSize(index)}>remove</button>
                                             </div>        
                                 )})}                               

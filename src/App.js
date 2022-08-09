@@ -23,11 +23,7 @@ function App() {
             <Route path="/thithien2" element={<Product/>}/>
             <Route path="/addproduct" element={<AddProduct/>}/>
             <Route path="/postimage" element={<PostImage/>}></Route>
-            <Route path="/products" element={<GetProducts/>}>
-              {/* <Route path="detail" element={<Page3/>}/>
-              <Route path="image" element={<Page4/>}/>
-              <Route path=":pageName/:pageId" element={<PageVariable/>}/> */}
-            </Route>       
+            <Route path="/products" element={<GetProducts/>}/>
             <Route path="/checkout" element={<Checkout/>}></Route>     
             <Route path="/success" element={<Success/>}></Route>     
           </Routes>

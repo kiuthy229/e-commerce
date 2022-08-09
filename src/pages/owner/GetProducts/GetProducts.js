@@ -88,10 +88,10 @@ const GetProducts = () => {
                             <h3>{product.description}</h3>
                             <h4><span class="fa fa-dollar"></span>$ {product.price}</h4>
                         </div>
-                        {/* <ul>
+                        <ul>
                             <li>SIZE</li>
                             {   product.sizes.map((size) => <li className="bg"><i>{size}</i></li>)}
-                        </ul> */}
+                        </ul>
                         <ul>
                             <li>COLOR</li>
                             {product.colors.map((color)=>(  <span key={color.hexValue}>

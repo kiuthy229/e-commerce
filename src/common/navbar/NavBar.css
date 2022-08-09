@@ -30,6 +30,12 @@
 .searchbar__input input:focus~.searchbar__history {
   display: block !important; 
 }
+.header_section{
+  position: fixed;
+  top: 0px;
+  z-index: 10;
+  width: 100%;
+}
 .navbar-expand-lg .navbar-nav .nav-link {
     padding-right: 15px;
     padding-left: 15px;
@@ -124,162 +130,7 @@
     -ms-flex-align: center;
     align-items: center; 
 }
-  
-@media (max-width: 575.98px) {
-    .navbar-expand-sm > .container,
-    .navbar-expand-sm > .container-fluid {
-      padding-right: 0;
-      padding-left: 0;
-    }
-  }
-  
-  @media (min-width: 576px) {
-    .navbar-expand-sm {
-      -ms-flex-flow: row nowrap;
-      flex-flow: row nowrap;
-      -ms-flex-pack: start;
-      justify-content: flex-start;
-    }
-    .navbar-expand-sm .navbar-nav {
-      -ms-flex-direction: row;
-      flex-direction: row;
-    }
-    .navbar-expand-sm .navbar-nav .dropdown-menu {
-      position: absolute;
-    }
-    .navbar-expand-sm .navbar-nav .nav-link {
-      padding-right: 0.5rem;
-      padding-left: 0.5rem;
-    }
-    .navbar-expand-sm > .container,
-    .navbar-expand-sm > .container-fluid {
-      -ms-flex-wrap: nowrap;
-      flex-wrap: nowrap;
-    }
-    .navbar-expand-sm .navbar-collapse {
-      display: -ms-flexbox !important;
-      display: flex !important;
-      -ms-flex-preferred-size: auto;
-      flex-basis: auto;
-    }
-  }
-  
-  @media (max-width: 767.98px) {
-    .navbar-expand-md > .container,
-    .navbar-expand-md > .container-fluid {
-      padding-right: 0;
-      padding-left: 0;
-    }
-  }
-  
-  @media (min-width: 768px) {
-    .navbar-expand-md {
-      -ms-flex-flow: row nowrap;
-      flex-flow: row nowrap;
-      -ms-flex-pack: start;
-      justify-content: flex-start;
-    }
-    .navbar-expand-md .navbar-nav {
-      -ms-flex-direction: row;
-      flex-direction: row;
-    }
-    .navbar-expand-md .navbar-nav .dropdown-menu {
-      position: absolute;
-    }
-    .navbar-expand-md .navbar-nav .nav-link {
-      padding-right: 0.5rem;
-      padding-left: 0.5rem;
-    }
-    .navbar-expand-md > .container,
-    .navbar-expand-md > .container-fluid {
-      -ms-flex-wrap: nowrap;
-      flex-wrap: nowrap;
-    }
-    .navbar-expand-md .navbar-collapse {
-      display: -ms-flexbox !important;
-      display: flex !important;
-      -ms-flex-preferred-size: auto;
-      flex-basis: auto;
-    }
-  }
-  
-  @media (max-width: 991.98px) {
-    .navbar-expand-lg > .container,
-    .navbar-expand-lg > .container-fluid {
-      padding-right: 0;
-      padding-left: 0;
-    }
-  }
-  
-  @media (min-width: 992px) {
-    .navbar-expand-lg {
-      -ms-flex-flow: row nowrap;
-      flex-flow: row nowrap;
-      -ms-flex-pack: start;
-      justify-content: flex-start;
-    }
-    .navbar-expand-lg .navbar-nav {
-      -ms-flex-direction: row;
-      flex-direction: row;
-    }
-    .navbar-expand-lg .navbar-nav .dropdown-menu {
-      position: absolute;
-    }
-    .navbar-expand-lg .navbar-nav .nav-link {
-      padding-right: 0.5rem;
-      padding-left: 0.5rem;
-    }
-    .navbar-expand-lg > .container,
-    .navbar-expand-lg > .container-fluid {
-      -ms-flex-wrap: nowrap;
-      flex-wrap: nowrap;
-    }
-    .navbar-expand-lg .navbar-collapse {
-      display: -ms-flexbox !important;
-      display: flex !important;
-      -ms-flex-preferred-size: auto;
-      flex-basis: auto;
-    }
-  }
-  
-  @media (max-width: 1199.98px) {
-    .navbar-expand-xl > .container,
-    .navbar-expand-xl > .container-fluid {
-      padding-right: 0;
-      padding-left: 0;
-    }
-  }
-  
-  @media (min-width: 1200px) {
-    .navbar-expand-xl {
-      -ms-flex-flow: row nowrap;
-      flex-flow: row nowrap;
-      -ms-flex-pack: start;
-      justify-content: flex-start;
-    }
-    .navbar-expand-xl .navbar-nav {
-      -ms-flex-direction: row;
-      flex-direction: row;
-    }
-    .navbar-expand-xl .navbar-nav .dropdown-menu {
-      position: absolute;
-    }
-    .navbar-expand-xl .navbar-nav .nav-link {
-      padding-right: 0.5rem;
-      padding-left: 0.5rem;
-    }
-    .navbar-expand-xl > .container,
-    .navbar-expand-xl > .container-fluid {
-      -ms-flex-wrap: nowrap;
-      flex-wrap: nowrap;
-    }
-    .navbar-expand-xl .navbar-collapse {
-      display: -ms-flexbox !important;
-      display: flex !important;
-      -ms-flex-preferred-size: auto;
-      flex-basis: auto;
-    }
-  }
+
 
   .navbar-expand {
     -ms-flex-flow: row nowrap;
@@ -300,7 +151,7 @@
   }
   
   .navbar-expand .navbar-nav .dropdown-menu {
-    position: absolute;
+    position: fixed;
   }
   
   .navbar-expand .navbar-nav .nav-link {

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import "./NavBar.css"
-import { FaShoppingCart, FaSearch } from 'react-icons/fa';
+import { FaShoppingCart } from 'react-icons/fa';
 import styled from "styled-components";
 import logo from '../assets/logo.png';
         
