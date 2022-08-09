@@ -3,8 +3,9 @@ import { IoIosAdd, IoMdRemove } from "react-icons/io";
 //import { Add, Remove } from "@material-ui/icons";
 import styled from "styled-components";
 
-const Container = styled.div``;
-
+const Container = styled.div`
+  margin-top: 50px;
+`;
 const Wrapper = styled.div`
   padding: 50px;
   display: flex;

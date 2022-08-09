@@ -4,96 +4,63 @@
   font-family: "Open Sans", sans-serif;
   box-sizing: border-box;
 }
-
-/* body {
-  background: #cef1f5;
-  transition: 0.6s linear;
-} */
-
 .nav-bar {
     display: flex;
 }
-
 .search {
     justify-content: right;
 }
 .card-container {
   display: flex;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin-left: 330px;
+
+  /* display: flex;
   justify-content: flex-start;
-  margin-left: 200px;
   margin-top: 10px;
   flex-wrap: wrap;
-  width: 80%;
-
+  width: 80%; */
 }
 .product-card {
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  width: 250px;
-  background: #ecedef;
-  padding: 50px;
   position: relative;
-  display: flex;
-  left: 25%;
-  margin: 15px;
-  top: 130px;
-  transform: translate(-50%, -50%);
-  text-transform: uppercase;
-  /* border-radius: 20px; */
-  /* position                  : relative;
-  margin-top                : 10px;
-  text-decoration           : none;
-  display                   : flex;
-  background-color          : #ffffff;
-  border-bottom-left-radius : 2px;
-  border-bottom-right-radius: 2px;
-  box-shadow                : 0 1px 2px 0 rgb(0, 0, 0, 0.1);
-  will-change               : transform;
-  transition                : transform linear 0.1s; */
-}
+  top: 10px;
+  display: inline-block;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 280px;
+  margin: 10px ;
+  text-align: center;
+  font-family: arial;
+  cursor: pointer;
+} 
 .product-card:hover {
-  box-shadow: 0 1px 20px 0 rgb(0, 0, 0, 0.05);
+  box-shadow: 0 1px 20px 0 #c8b88a;
 }
 .product-card h1 {
-  font-size: 22px;
   color: #41612c;
-  margin-bottom: 4px;
-  /* margin            : 10px;
-  font-size         : 1.3rem;
-  font-weight       : 400;
-  color             : #41612c;
-  line-height       : 1.8rem;
-  height            : 3.6rem;
-  overflow          : hidden;
-  display           : block;
-  display           : -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2; */
+  font-weight: bold;
+  font-size: 22px;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  margin-top: 0px;
+  display: inline-block;
+  width: 250px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .product-card p {
   font-size: 13px;
   color: #bbb;
 }
 .product-pic {
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  transition: 0.6s linear; 
-  position: relative;
-  left: 10px;
-  right: 0px;
-  align-items: center;
-  margin-top: 10px; 
-
-  /* padding-top        : 100%;
-  background-position: center;
-  background-size    : contain;
-  background-repeat  : no-repeat; */
+  width: 280px;
+  height: 380px;
 }
 .product-colors {
-  margin-bottom: 40px;
-  display: flex;
-  justify-content: center;
+  width: 300px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .product-colors span {
@@ -134,67 +101,26 @@
 }
 .product-price {
   color: #476930;
-  /* font-size: 26px;
-  text-align: left; */
-  font-size: 1.4rem;
+  font-size: 22px;
 }
 .product-button {
-  margin-left: auto;
+  justify-content: center;
+  align-items: center;
+  margin-left: 19px;
+  margin-top: 8px;
   color: #76a136;
-  text-decoration: none;
   border: 2px solid;
-  padding: 8px 24px;
+  outline: none;
+  padding: 5px 80px;
+  background: none;
   border-radius: 20px;
   transition: 0.4s linear;
-  
-  
+  display: block;
+  font-size: 15px;
+  position: relative;
 }
-
 .product-button:hover {
-  transform: scale(1.06)
-  ;
-}
-
-#slider-range .ui-slider-handle {
-  background-color: #b0b435;
-  border: 2px solid #000000;
-  border-radius: 50%;
-  cursor: pointer;
-  height: 21px;
-  top: -6px;
-  transition: none 0s ease 0s;
-  width: 30px;
-  box-shadow: 0px 0px 6.65px 0.35px rgba(0,0,0,0.15);
-}
-#slider-range .ui-slider-range {
-  background-color: #b0b435;
-  border-radius: 0;
-}
-#slider-range {
-  background: #b0b435;
-  border: medium none;
-  border-radius: 50px;
-  float: left;
-  height: 5px;
-  margin-top: 12px;
-  width: 100%;
-}
-
-.price-box-slider p{
-  clear: both;
-  margin-top: 20px;
-  display: inline-block;
-  width: 100%;
-}
-
-.price-box-slider p input{
-  margin-top: 10px;
-  width: 200px;
-}
-.price-box-slider p button{
-  border: none;
-  color: #b0b435;
-  float: right;
+  transform: scale(1.06);
 }
 .side-bar {
   flex-direction: column;

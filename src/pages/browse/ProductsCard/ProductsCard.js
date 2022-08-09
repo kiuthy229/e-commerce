@@ -61,17 +61,10 @@ export const Viewallproducts = () => {
   const handleSearch = () => {
         setSearchResult([])
         setSearchClicked(true)
-        // Set search result = all items when search term's empty
-        // if (searchTerm === ""){
-        //   setSearchResult(products)
-        // }
         if (searchTerm !== ""){
-          //loop through all elements
           const filteredProducts = products.filter((product, index) => {
-            //check if text includes the search value
             return product.name.toLowerCase().includes(searchTerm.toLowerCase()) 
           })
-
           setSearchResult(filteredProducts)
           // console.log(searchResult)
       }  
@@ -83,7 +76,38 @@ export const Viewallproducts = () => {
         <Input type="search" id="searchbar__input" placeholder="Search" onChange={(e)=>setSearchTerm(e.target.value)}/> 
         <button id="search" onClick={handleSearch}><FaSearch /></button>
       </SearchContainer>
-      <div id="slider-range"></div>
+      <div id="slider-range"></div>   
+      {/*------------------*/}  
+      <div class="container">
+        <div class="row">
+          <div class="col-sm">
+            <Dropdown selected={selected} setSelected={setSelected} />
+            <ColorFilter />
+            <PriceFilter />
+          </div>
+          <div class="col-sm">
+            <div className="card-container">  
+              {products && !searchClicked &&
+                products.map((product) =>
+                <div class="product-card">
+                    <div><img class="product-pic" src={process.env.PUBLIC_URL + 'upload-images/' + product.pictures[0]}/>
+                    </div>
+                    <h1 class="product-name">{product.name}</h1>
+                    <div class="product-colors"></div>
+                      <div class="product-price">${product.price}</div>
+                      <p>
+                        <div>
+                        <button className="product-button" onClick={()=>OpenDetails(product.id)}>Add to Cart</button>
+                        </div>
+                      </p>
+                </div>
+                )
+              }
+                </div>
+          </div>
+        </div>
+      </div>
+      {/*------------------*/}   
           {/*Side-bar*/}
       {/* <div className="side-bar"> */}
           <Dropdown selected={selected} setSelected={setSelected} />
@@ -94,19 +118,19 @@ export const Viewallproducts = () => {
     {products && !searchClicked &&
       products.map((product) =>
       <div class="product-card">
-          {/* {pid} */}
+          <div><img class="product-pic" src={process.env.PUBLIC_URL + 'upload-images/' + product.pictures[0]}/>
+          </div>
           <h1 class="product-name">{product.name}</h1>
-          {/* <p>{product.description}</p> */}
-          <div>{product.pictures.map((pic) => <img class="product-pic" src={pic}/>)}
-          </div>
-          <div class="product-colors">
-          </div>
-          <div class="product-info">
-            <div class="product-price">{product.price}</div>
-            <a href="#" class="product-button" onClick={()=>OpenDetails(product.id)}>Add to Cart</a>
-          </div>
-        </div>
-      )}
+          <div class="product-colors"></div>
+            <div class="product-price">${product.price}</div>
+            <p>
+              <div>
+              <button className="product-button" onClick={()=>OpenDetails(product.id)}>Add to Cart</button>
+              </div>
+            </p>
+      </div>
+      )
+    }
       </div>
       {searchClicked && 
       searchResult.map((product) =>
