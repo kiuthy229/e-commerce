@@ -1,34 +1,34 @@
 .wrapper {
     display: flex;
-    align-items: left;
+    /* align-items: left; */
     flex-direction: column;
-    justify-content: flex-start;
-    min-height: 0vh;
-    width: 300px;
-    padding: 15px 15px;
-    margin: 0px;
+    /* justify-content: flex-start; */
+    /* min-height: 0vh; */
+    width: 250px;
+    /* padding: 15px 15px; */
+    /* margin-left: 0px; */
 }
 h4 {
     color: #476930;
     font-weight: 600;
 }
 .price-input {
-    width: 90%;
+    width: 80%;
     margin: 15px 0 25px;
     border-color: #476930;
     display: flex;
 }
 .price-input .field {
     height: 40px;
-    width: 100%;
+    width: 80%;
     display: flex;
     align-items: center;
 }
 .field input {
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    height: 90%;
     outline: none;
-    font-size: 17px;
+    font-size: 15px;
     text-align: center;
     margin-left: 10px;
     border-radius: 5px;

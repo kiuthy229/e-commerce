@@ -55,7 +55,7 @@ const NavBar = () => {
                             </li>
                             <li className="nav-item">
                                 <MenuItem>
-                                    <a className="nav-link" href="">Customer</a>
+                                    <a className="nav-link" href="/customer">Customer</a>
                                 </MenuItem>
                             </li>
                             <li className="nav-item">

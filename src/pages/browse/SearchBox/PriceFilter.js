@@ -28,7 +28,6 @@ export const PriceFilter = () => {
     });
     return (
         <span class="wrapper">
-            <h4>Price</h4>
         <span class="price-input">
             <div class="field">
                 <span>Min</span>

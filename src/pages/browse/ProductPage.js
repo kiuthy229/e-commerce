@@ -1,7 +1,7 @@
 import React from "react";
 import { Viewallproducts } from "./ProductsCard/ProductsCard";
 
-const Main = () => {
+export const CustomerProduct = () => {
     return (
       <div>
         <Viewallproducts />
@@ -9,4 +9,3 @@ const Main = () => {
     );
   };
   
-  export default Main;
