@@ -3,38 +3,6 @@ import "./NavBar.css"
 import { FaShoppingCart, FaSearch } from 'react-icons/fa';
 import styled from "styled-components";
 import logo from '../assets/logo.png';
-//import { Viewallproducts } from "../../pages/browse/ProductsCard/ProductsCard";
-//import { gql } from '@apollo/client';
-
-// const GET_PRODUCTS = gql`
-//   query GetProducts {
-//     products {
-//         id
-//         name
-//         price
-//         stock
-//         description
-//         colors {
-//           name
-//           hexValue
-//         }
-//         categories
-//         pictures
-//         sizes
-//       }
-//   }
-// `;
-// export const Viewallproducts = () => {
-//     const {error, loading, data} = useQuery(GET_PRODUCTS)
-//     const [products, setProducts] = useState([])
-    
-//     useEffect(() => {
-//       if (data) {
-//         setProducts(data.products)
-//         console.log(data)
-//       }
-//     })
-    //return (
         
 const Left = styled.div`
   flex: 1;

@@ -37,6 +37,13 @@
     color: #000000;
 }
 
+.header_section{
+  position: fixed;
+  z-index: 10;
+  top: 0px;
+  width: 100%;
+}
+
 .navbar-light .navbar-nav .nav-link:hover {
     color: #df9911;
 }

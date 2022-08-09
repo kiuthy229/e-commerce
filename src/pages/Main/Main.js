@@ -31,7 +31,7 @@ const MainPage = () => {
     return ( 
         <div>
                   <div class="banner_section layout_padding">
-                        <div class="container">
+                        <div class="banner_container">
                             <div class="row">
                             <div class="col-md-12">
                                 <div class="banner_taital">Find Your Style</div>

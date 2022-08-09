@@ -66,7 +66,7 @@ const AddProduct = () => {
                 if (!values.colors) {
                     errors.colors = 'Required';
                 }
-                if (values.description.length > 100) {
+                if (values.description.length > 1000) {
                     errors.description = 'Too long description';
                 }
                 if (!isBefore(new Date(values.featuringFrom.toString().slice(6,10), values.featuringFrom.toString().slice(3,5) -1, values.featuringFrom.toString().slice(0,2)), new Date())){
