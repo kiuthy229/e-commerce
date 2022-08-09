@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useCallback, useState, useRef } from 'react'
 import { useQuery, gql, useMutation, useLazyQuery } from '@apollo/client';
 import { useNavigate, UNSAFE_NavigationContext as NavigationContext } from 'react-router-dom';
-//import { Prompt } from 'react-router'
 import { Product } from './ProductInfo';
 import { Fee } from './Fee';
 import './Cart.css';
@@ -68,6 +67,13 @@ const GET_FEE = gql`
   }
 `;
 
+const EMPTY_CART = gql`
+mutation EmptyCart($customerId: ID!) {
+  emptyCart(customerId: $customerId) {
+    id
+  }
+}
+`
 export function Cart() {
 
   // reduce function
@@ -108,53 +114,9 @@ export function Cart() {
   const [getProduct, productResult] = useLazyQuery(GET_PRODUCT);
   const [updateCustomer, updateCustomerResult] = useMutation(UPDATE_CUSTOMER);
   const [updateQuantityDB, QuantityDBResult] = useMutation(UPDATE_QUANTITY_DB);
+  const [emptyCart, emptyCartResult] = useMutation(EMPTY_CART);
   usePrompt("Leave screen?", isBlocking);
   useEffect(() => {
-    const fetchProductPriceInCart = async () => {
-      getLazyCart({
-        variables: {
-          customerId: 1
-        }
-      }).then(
-        async (value) => {
-          let shipping = 0;
-          let tax = 0;
-          let sum = 0;
-          let quantity = 0;
-          getLazyFee({
-            variables: {
-              location: value.data.customer.location
-            }
-          }).then(
-            async value => {
-              shipping = value.data.fee.shipping;
-              tax = value.data.fee.tax;
-              setShipping(shipping);
-              setTax(tax);
-            }
-          )
-          for (var item of value.data.customer.items.map(item => item)) {
-            quantity = item.quantity
-            setListQuantity(listQuantity => [...listQuantity, item.quantity]);
-            await getProduct({
-              variables: {
-                productId: item.productId
-              }
-            }).then(
-              async (value) => {
-                sum += value.data.product.price * quantity;
-                setListPrice(listPrice => [...listPrice, value.data.product.price]);
-                setSubTotal(sum);
-                setTotal(sum + sum * tax + shipping)
-              }
-            )
-          }
-        }
-      )
-    }
-
-
-
     const getItemGrouped = async () => {
       getLazyCart({
         variables: {
@@ -163,22 +125,29 @@ export function Cart() {
       })
         .then(
           async value => {
+            let shipping = 0;
+            let tax = 0;
+            let sum = 0;
+            let quantity = 0;
+            getLazyFee({
+              variables: {
+                location: value.data.customer.location
+              }
+            }).then(
+              async value => {
+                shipping = value.data.fee.shipping;
+                tax = value.data.fee.tax;
+                setShipping(shipping);
+                setTax(tax);
+              }
+            )
+
+            //logic to group item with similar id (name, color, size, price)
             var tmpCus = { ...value.data }
             var tmpCusData = { ...value.data.customer }
             let itemgroup = Object.entries(groupBy(value.data.customer.items, 'productId'));
-            console.log('itemgr', itemgroup)
             let itemArray = [];
             for (var arr of itemgroup) {
-              await getProduct({
-                variables: {
-                  productId: arr[0]
-                }
-              })
-                .then(
-                  value => {
-                    setListStock(listStock => [...listStock, value.data.product.stock]);
-                  }
-                )
               let itemQuantity = arr[1]
               let anItem = arr[1][0]
               console.log('arr', arr)
@@ -193,24 +162,34 @@ export function Cart() {
                 quantity: count
               };
               itemArray.push(aItemGroup);
-              console.log('aItemGroup', aItemGroup)
-              console.log('itemArray', itemArray)
+              quantity = aItemGroup.quantity;
+              setListQuantity(listQuantity => [...listQuantity, aItemGroup.quantity]);
+
+              //calculate subtotal, total
+              await getProduct({
+                variables: {
+                  productId: arr[0]
+                }
+              })
+                .then(
+                  value => {
+                    sum += value.data.product.price * quantity;
+                    setListPrice(listPrice => [...listPrice, value.data.product.price]);
+                    setListStock(listStock => [...listStock, value.data.product.stock]);
+
+                    setSubTotal(sum);
+                    setTotal(sum + sum * tax + shipping)
+                  }
+                )
             }
             let tmpItemArray = [...itemArray]
             tmpCusData.items = tmpItemArray;
-            console.log('tmpCusData', tmpCusData)
             tmpCus.customer = { ...tmpCusData }
-            console.log('tmpCus', tmpCus);
             let tmp = { ...tmpCus }
-            console.log('tpm', tmp)
             setCustomer(tmp);
-
           }
         )
     }
-
-    fetchProductPriceInCart()
-      .catch(console.error);
     getItemGrouped();
   }, [getProduct, getLazyCart, getLazyFee, setListQuantity, setCustomer, setShipping, setSubTotal, setTotal, setTax]);
   // console.log('tax ', tax)
@@ -219,6 +198,7 @@ export function Cart() {
   // console.log(' total  ', total)
   //console.log('cust', customer)
   console.log('list stock ', listStock)
+  console.log('list price ', listPrice)
 
   if (getCart.loading) return <div>Loading...</div>
   if (updateCustomerResult.loading) return <div>Submitting...</div>
@@ -227,9 +207,7 @@ export function Cart() {
   if (!customer) return <div>Loading... </div>
   else
     return (
-      <>
-
-        <NavBar />
+      <div className='body'>
         <Formik
           enableReinitialize={true}
           initialValues={{
@@ -279,6 +257,7 @@ export function Cart() {
                         }
                       )
                       console.log(currentQuantity)
+
                       await updateQuantityDB({
                         variables: {
                           product: {
@@ -289,12 +268,17 @@ export function Cart() {
                       }).then(
                         value => {
                           console.log('update in db: ', value);
-
                         }
                       )
                       console.log('final', currentQuantity - product.quantity)
+
                     }
                     console.log('customer get lazy cart', value)
+                    await emptyCart({
+                      variables: {
+                        customerId: 1
+                      }
+                    })
                     navigate('/success', { replace: true })
                   }
                 )
@@ -412,7 +396,6 @@ export function Cart() {
                             <div>
                               <Field
                                 type='checkbox'
-                                // checked={values.customer.items.includes(item)}
                                 name='customer.items'
                                 onChange={(e) => {
                                   handleChange(e);
@@ -421,11 +404,6 @@ export function Cart() {
                                   if (e.target.checked) {
                                     arrayHelpers.move(index, values.customer.items.length - 1)
                                   }
-                                  // if (e.target.checked) { arrayHelpers.push(item) }
-                                  // else {
-                                  //   arrayHelpers.remove(index)
-                                  // }
-
                                 }}
                               ></Field>
                             </div>
@@ -446,22 +424,17 @@ export function Cart() {
                                   console.log('quantity arr ', tmpQuantity);
                                   let updatedQuantityList = [...listQuantity];
                                   updatedQuantityList[index] = parseInt(e.target.value);
+                                  if (tmpQuantity == 0) {
+                                    updatedQuantityList[index] = 1;
+                                    setShowModelQuantity(true);
+                                    setMarkedDelete(index)
+                                  }
                                   setListQuantity(updatedQuantityList);
                                   let sum = updatedQuantityList.reduce((r, a, i) => {
                                     return r + a * listPrice[i]
                                   }, 0);
                                   setSubTotal(sum);
                                   setTotal(sum + sum * tax + shipping);
-
-                                  //handle delete if quantity = 0
-                                  // if (tmpQuantity == 0) {
-                                  //   console.log('=0', tmpQuantity)
-                                  //   arrayHelpers.remove(index);
-                                  // }
-                                  if (tmpQuantity == 0) {
-                                    setShowModelQuantity(true);
-                                    setMarkedDelete(index)
-                                  }
                                 }}
                                 onBlur={handleBlur}
                                 value={item?.quantity}
@@ -487,12 +460,29 @@ export function Cart() {
                                   <Button variant="secondary" onClick={() => {
                                     setShowModelQuantity(false);
                                     item.quantity = 1;
+
                                     setMarkedDelete(-1);
                                   }}>
                                     Cancel
                                   </Button>
                                   <Button variant="primary" onClick={() => {
                                     setShowModelQuantity(false);
+                                    let updatedQuantityList = [...listQuantity];
+                                    console.log('updatedQuantityList', updatedQuantityList)
+                                    updatedQuantityList.splice(index, 1);
+                                    console.log('updatedQuantityList aft', updatedQuantityList)
+                                    setListQuantity(updatedQuantityList);
+                                    let updatedPriceList = [...listPrice];
+                                    console.log('updatedPriceList', updatedPriceList)
+                                    updatedPriceList.splice(index, 1);
+                                    console.log('updatedPriceList aft', updatedPriceList)
+
+                                    setListPrice(updatedPriceList);
+                                    let sum = updatedQuantityList.reduce((r, a, i) => {
+                                      return r + a * updatedPriceList[i]
+                                    }, 0);
+                                    setSubTotal(sum);
+                                    setTotal(sum + sum * tax + shipping);
                                     arrayHelpers.remove(index);
                                     setMarkedDelete(-1);
                                   }}>
@@ -512,37 +502,25 @@ export function Cart() {
                     </div >
                     <div>Sub Total {isNaN(subTotal) || !values.customer.location ? 'Not available' : subTotal}</div>
                     <div>Total {isNaN(total) || !values.customer.location ? 'Not available' : total}</div>
+                    <button type="submit" disabled={
+                      isSubmitting
+                      || !values.customer.location
+                      || !values.customer.name
+                      || subTotal === 0
+                      || isNaN(subTotal)
+                    }>
+                      Submit
+                    </button>
                   </div>
-
-
                 </div >
-                <button
-                  type='button'
-                  onClick={() => {
-                    console.log(values)
-                    alert(JSON.stringify(values, null, 2));
-                    console.log(customer)
-                    console.log('isblock ', isBlocking)
-                  }}
-                >
-                  Test
-                </button>
 
-                <button type="submit" disabled={
-                  isSubmitting
-                  || !values.customer.location
-                  || !values.customer.name
-                  || subTotal === 0
-                  || isNaN(subTotal)
-                }>
-                  Submit
-                </button>
+
               </Form >
             )
           }
 
         </Formik >
-      </>
+      </div>
     );
 }
 /**
