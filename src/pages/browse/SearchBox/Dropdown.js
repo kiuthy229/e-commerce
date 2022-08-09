@@ -4,7 +4,7 @@ import './Dropdown.css';
 
 export function Dropdown ({selected, setSelected}) {
     const [isActive, setIsActive] = useState(false);
-    const options = ['Quần Jeans','Áo khoác','Áo thun','Váy','Đầm']
+    const options = ['Dresses','T-shirts','Pants','Skirts','Jeans']
     return (
         <div className="dropdown">
             <h4>Categories</h4>
@@ -27,5 +27,3 @@ export function Dropdown ({selected, setSelected}) {
         </div>
     )
 };
-
-// export default Dropdown;

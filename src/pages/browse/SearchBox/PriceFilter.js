@@ -27,9 +27,9 @@ export const PriceFilter = () => {
         });
     });
     return (
-        <div class="wrapper">
+        <span class="wrapper">
             <h4>Price</h4>
-        <div class="price-input">
+        <span class="price-input">
             <div class="field">
                 <span>Min</span>
                 <input type="number" class="input-min" step={10}/>
@@ -39,7 +39,7 @@ export const PriceFilter = () => {
                 <span>Max</span>
                 <input type="number" class="input-max" step={10}/>
             </div>
-        </div>
-        </div>
+        </span>
+        </span>
     )
 };

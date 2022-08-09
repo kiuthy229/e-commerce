@@ -114,7 +114,7 @@ export const Viewallproducts = () => {
           {/* {pid} */}
           <h1 class="product-name">{product.name}</h1>
           {/* <p>{product.description}</p> */}
-          <div>{product.pictures.map((pic) => <img class="product-pic" src={pic}/>)}
+          <div><img class="product-pic" src={process.env.PUBLIC_URL + 'upload-images/' + product.pictures[0]}/>
           </div>
           <div class="product-colors">
           </div>
