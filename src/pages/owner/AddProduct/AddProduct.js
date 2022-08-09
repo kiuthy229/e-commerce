@@ -8,11 +8,13 @@ import Dropzone from "react-dropzone";
 import Thumb from "./Thumb";
 import { GetColorName } from 'hex-color-to-color-name';
 import isBefore from 'date-fns/isBefore';
-import isAfter from 'date-fns/isAfter'
+import isAfter from 'date-fns/isAfter';
+import remove from '../../../common/assets/remove.png';
 
 const AddProduct = () => {
+    //Styling for dropzone
     const dropzoneStyle = {
-        width: "400px",
+        width: "600px",
         height: "auto",
         borderWidth: 2,
         borderColor: "rgb(102, 102, 102)",
@@ -24,19 +26,30 @@ const AddProduct = () => {
     const [createProduct, {error, loading, data}] = useMutation(ADD_PRODUCT_MUTATION)
     const [sizesArray, setSizesArray] = useState([""])
     const [colorsArray, setColorsArray] = useState([""])
+    const [selectedFiles, setSelectedFiles ] = useState([]);
+    const [picturesSelected, setPicturesSelected ] = useState([]);
+    const [pictures, setPictures] = useState([]);
 
     const AddSize = () =>{ 
         setSizesArray((array)=>[...array,""])
     }
 
     const RemoveSize = useCallback((index) => {
-        sizesArray.splice(index,1)
-        setSizesArray(sizesArray);
+        const sizesArrayCopy = [...sizesArray]
+        sizesArrayCopy.splice(index,1)
+        setSizesArray(sizesArrayCopy);
     }, [sizesArray]);
 
     const AddColor = () =>{ 
         setColorsArray((array)=>[...array,""])
     }
+
+    const RemoveColor = useCallback((index) => {
+        const colorsArrayCopy = [...colorsArray]
+        colorsArrayCopy.splice(index,1)
+        setColorsArray(colorsArrayCopy);
+    }, [colorsArray]);
+
     return ( 
         <div className="form-add">
         <Formik
@@ -51,7 +64,9 @@ const AddProduct = () => {
                     name:'',
                     hexValue: ''
                 }],
-                sizes: []
+                sizes: [],
+                featuringFrom:'01/01/2022',
+                featuringTo:'31/12/2022'
             }}
 
             validate={values => {
@@ -71,21 +86,18 @@ const AddProduct = () => {
                 if (values.description.length > 1000) {
                     errors.description = 'Too long description';
                 }
-                if (!isBefore(new Date(values.featuringFrom.toString().slice(6,10), values.featuringFrom.toString().slice(3,5) -1, values.featuringFrom.toString().slice(0,2)), new Date())){
-                    errors.featuringFrom = '“Featuring from” date should be greater or equal today'
+                if (!isBefore(new Date(values.featuringFrom.slice(6,10), values.featuringFrom.slice(3,5) -1, values.featuringFrom.slice(0,2)), new Date())){
+                    errors.featuringFrom = '"Featuring from" date should be greater or equal today'
                 }
-                if (!isAfter(new Date(values.featuringTo.toString().slice(6,10), values.featuringTo.toString().slice(3,5) -1, values.featuringTo.toString().slice(0,2)), 
-                            new Date(values.featuringFrom.toString().slice(6,10), values.featuringFrom.toString().slice(3,5) -1, values.featuringFrom.toString().slice(0,2)))){
-                    errors.featuringTo = '“Featuring to” date should be greater than “Featuring from” date'
+                if (!isAfter(new Date(values.featuringTo.slice(6,10), values.featuringTo.slice(3,5) -1, values.featuringTo.slice(0,2)), 
+                            new Date(values.featuringFrom.slice(6,10), values.featuringFrom.slice(3,5) -1, values.featuringFrom.slice(0,2)))){
+                    errors.featuringTo = '"Featuring to" date should be greater than “Featuring from” date'
                 }
                 return errors;
             }}
 
             onSubmit={(values, { setSubmitting }) => {
-                if (isAfter(new Date(values.featuringTo.toString().slice(6,10), values.featuringTo.toString().slice(3,5) -1, values.featuringTo.toString().slice(0,2)), 
-                            new Date(values.featuringFrom.toString().slice(6,10), values.featuringFrom.toString().slice(3,5) -1, values.featuringFrom.toString().slice(0,2)))){
-                    console.log("is after")
-                }
+                console.log(pictures)
                 setTimeout(() => {
                     alert(JSON.stringify(values, null, 2));
                     createProduct({
@@ -95,7 +107,7 @@ const AddProduct = () => {
                             stock: parseInt(values.stock),
                             description: values.description,
                             categories: values.categories,
-                            pictures: values.pictures.map((file) => file.name),
+                            pictures: picturesSelected,
                             colors: values.colors.map((color)=>({ name: GetColorName(color.hexValue), hexValue: color.hexValue })),
                             sizes: values.sizes.map((size) => size),
                             featuringFrom: values.featuringFrom,
@@ -103,7 +115,7 @@ const AddProduct = () => {
                         }
                       })
                     const formData = new FormData();
-                    values.pictures.filter((file) =>{formData.append("pictures", file)});
+                    pictures.filter((file) =>{formData.append("pictures", file)});
                     axios.post("http://localhost:3001/upload", formData, {
                           headers: {
                               "content-type": "multipart/form-data",
@@ -137,55 +149,82 @@ const AddProduct = () => {
                     setFieldValue,
                     setFieldTouched
                     }) => {
+
+                        const handleImageChange = (e) => {
+                            if (e.target.files) {
+                                const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
+                                const picturesArray = Array.from(e.target.files).map((file) => file.name);
+                                const pictures = Array.from(e.target.files).map((file) => file);
+                    
+                                setPicturesSelected((prevImages) => prevImages.concat(picturesArray))
+                                setSelectedFiles((prevImages) => prevImages.concat(filesArray));
+                                setPictures((prevImages) => prevImages.concat(pictures));
+                                Array.from(e.target.files).map(
+                                    (file) => URL.revokeObjectURL(file) // avoid memory leak
+                                );
+                            }
+                        };
+                    
+                        const renderPhotos = (source) => {
+                            console.log('source: ', source);
+                            return source.map((photo) => {
+                                return <img src={photo} alt="" key={photo}/>;
+                            });
+                        };
                 
                 return (
                     <Form onSubmit={handleSubmit}>
                         <h1 className="header">Create Product</h1>
-                            <div className="nameField">
+                            <div>
                                 <label className="lbl-name">Name</label>
-                                <input className="ipt-name" placeholder="Product name" id="name" name="name" onChange={handleChange} value={values.name} onBlur={() => setFieldTouched('name', true)}/>
-                                {errors.name && touched.name && errors.name}
-                            </div>
-                            
-                            <div className="priceField">
+                                <input className="ipt-name" placeholder="Product name" id="name" name="name" onChange={handleChange} onBlur={() => setFieldTouched('name', true)}/>
+                                <span className="error-name">{errors.name && touched.name && errors.name}</span>
+
                                 <label className="lbl-price">Price</label>
-                                <input className="ipt-price" placeholder="Product price" type="number" id="price" name="price" onChange={handleChange} value={values.price}/>
-                                {errors.price && touched.price && errors.price}
-                            </div>
-                            
-                            <div className="stockField">
+                                <input className="ipt-price" placeholder="Product price" type="number" id="price" name="price" onChange={handleChange} onBlur={() => setFieldTouched('price', true)}/>
+                                <span className="error-price">{errors.price && touched.price && errors.price}</span>
+
                                 <label className="lbl-stock">Stock</label>
-                                <input className="ipt-stock" placeholder="Stock" type="number" id="stock" name="stock" onChange={handleChange} value={values.stock}/>
-                                {errors.stock && touched.stock && errors.stock}
+                                <input className="ipt-stock" placeholder="Stock" type="number" id="stock" name="stock" onChange={handleChange} onBlur={() => setFieldTouched('stock', true)}/>
+                                <span className="error-stock">{errors.stock && touched.stock && errors.stock}</span>
                             </div>
 
                             <div className="colorField">
                                 <label className="lbl-color">Colors</label>
-                                <div style={{width:"300px", display: "flex", flexWrap: "wrap"}} >
+                                <div style={{width:"500px", display: "flex", flexWrap: "wrap"}} >
                                     {colorsArray.map((color, index) => {
-                                        return (<span key={index}>
-                                                    <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={handleChange}/>
+                                        return (<span className="owner-add-colors-container" key={index}>
+                                                    <div className="owner-add-color-inner">
+                                                        <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={handleChange}/>
+                                                    </div>
+                                                    <div className="owner-add-color-inner">
+                                                        <button type="button" className="owner-remove-color-btn hide-remove-color" onClick={()=>RemoveColor(index)}></button>
+                                                    </div>
                                                 </span>        
                                     )})}      
                                 </div>  
                                 {errors.colors && touched.colors && errors.colors}                       
-                                <p className="add-color" onClick={AddColor}>Add color</p>
+                                <button type="button" className="add-color" onClick={AddColor}>Add color</button>
                             </div>
 
                             <div className="sizesField">
                                 <label className="lbl-sizes">Sizes</label>
                                 {sizesArray.map((size, index) => {
-                                    return (<div key={index}>
-                                                <FastField className="ipt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={handleChange} defaultValue=""/>
-                                                <button onClick={()=>RemoveSize(index)}>remove</button>
+                                    return (<div className="owner-add-sizes-container" key={index}>
+                                                <div className="owner-add-size-inner">
+                                                    <FastField className="ipt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={handleChange}/>
+                                                </div>
+                                                <div className="owner-add-size-inner">
+                                                    <button type="button" className="owner-remove-size-btn hide-remove-size" onClick={()=>RemoveSize(index)}></button>
+                                                </div>
                                             </div>        
-                                )})}                               
-                                <p className="add-size" onClick={AddSize}>Add Size</p>
+                                            )})}                               
+                                <button type="button" className="add-size" onClick={AddSize}>Add Size</button>
                             </div>
                             
                             <div className="descriptionField">
                                 <label className="lbl-description">Description</label>
-                                <input className="ipt-description" placeholder="Description" id="description" name="description" onChange={handleChange} value={values.description}/>
+                                <textarea rows="10" cols="10" className="ipt-description" placeholder="Description" id="description" name="description" onChange={handleChange} value={values.description}/>
                                 {errors.description && touched.description && errors.description}
                             </div>
                             
@@ -193,8 +232,18 @@ const AddProduct = () => {
                                 <label className="lbl-categories">Categories</label>
                                 <input className="ipt-categories" placeholder="Categories" id="categories" name="categories" onChange={handleChange} value={values.categories}/>
                             </div>
+
+                            <div>
+                                <input type="file" id="file" multiple onChange={handleImageChange}/>
+                                <div className="label-holder">
+                                    <label htmlFor="file" className="label">
+                                        <i className="material-icons">+</i>
+                                    </label>
+                                </div>
+                                <div className="result">{renderPhotos(selectedFiles)}</div>
+                            </div>
                             
-                            <div className="picturesField">
+                            {/* <div className="picturesField">
                                 <label className="lbl-pictures">Pictures</label>
                                 <Dropzone  accept="image/*" onDrop={(acceptedFiles) => {
                                     // do nothing if no files
@@ -231,26 +280,23 @@ const AddProduct = () => {
                                         }
                                     }}
                                 </Dropzone>
-                            </div>
+                            </div> */}
 
                             <div>
-                                <label className="">Featuring From</label>
-                                <input className="ipt-featuringFrom" type="text" format="dd/mm/yyyy"  name="featuringFrom" onChange={handleChange} value={values.featuringFrom}/>
+                                <label className="lbl-featuringFrom">Featuring From</label>
+                                <input className="ipt-featuringFrom" type="text" format="dd/mm/yyyy"  name="featuringFrom" onChange={handleChange} value="01/01/2022"/>
                                 {errors.featuringFrom && touched.featuringFrom && errors.featuringFrom}
-                            </div>
 
-                            <div>
-                                <label className="">Featuring To</label>           
-                                <input className="ipt-featuringTo" type="text" format="dd/mm/yyyy" name="featuringTo" onChange={handleChange} value={values.featuringTo}/>
+                                <label className="lbl-featuringTo">Featuring To</label>           
+                                <input className="ipt-featuringTo" type="text" format="dd/mm/yyyy" name="featuringTo" onChange={handleChange} value="31/12/2022"/>
                                 {errors.featuringTo && touched.featuringTo && errors.featuringTo}
                             </div>
 
                             <div>
                                 <button className="add-product" type="submit" disabled={isSubmitting}>{isSubmitting ? "Submitting..." : "Submit"}</button>
                             </div>
-
                             <div>
-                                <button><a href="/products">Products</a></button>
+                                error:{errors.name && touched.name && errors.name}
                             </div>
                     </Form>
                 )

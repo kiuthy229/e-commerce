@@ -9,6 +9,7 @@ import Thumb from "../AddProduct/Thumb";
 import { GetColorName } from 'hex-color-to-color-name';
 import { GET_PRODUCT } from "../../../data/queries/get-product";
 import isBefore from 'date-fns/isBefore';
+import remove from '../../../common/assets/remove.png';
 
 const UpdateProduct = (props) => {
     const dropzoneStyle = {
@@ -173,30 +174,40 @@ const UpdateProduct = (props) => {
                         return (
                             <Form onSubmit={handleSubmit} className="update-popup">
                                 <h1 className="header-update">Update</h1>
-                                    <div className="update-nameField">
-                                        <label className="lbl-name">Name</label>
-                                        <input className="upt-name" placeholder="Product name" name="name" onChange={handleChange} defaultValue={product.name}/>
+                                    <div>
+                                        <label className="update-lbl-name">Name</label>
+                                        <input className="update-ipt-name" placeholder="Product name" name="name" onChange={handleChange} defaultValue={product.name}/>
 
-                                        <label className="lbl-price">Price</label>
-                                        <input className="upt-price" placeholder="Product price" type="number" name="price" onChange={handleChange} defaultValue={product.price}/>
+                                        <label className="update-lbl-price">Price</label>
+                                        <input className="update-ipt-price" placeholder="Product price" type="number" name="price" onChange={handleChange} defaultValue={product.price}/>
 
-                                        <label className="lbl-stock">Stock</label>
-                                        <input className="upt-stock" placeholder="Stock" type="number" name="stock" onChange={handleChange} defaultValue={product.stock}/>
+                                        <label className="update-lbl-stock">Stock</label>
+                                        <input className="update-ipt-stock" placeholder="Stock" type="number" name="stock" onChange={handleChange} defaultValue={product.stock}/>
                                     </div>
 
                                     <div className="update-colorField">
-                                        <label className="lbl-color">Colors</label>
+                                        <label className="update-lbl-color">Colors</label>
                                         <div style={{width:"600px", display: "flex", flexWrap: "wrap"}} >
                                             {colorsArray.map((color, index) => {
-                                                return (<span key={index}>
-                                                            <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={(e) => {setFieldValue(`colors[${index}].hexValue`, e.target.value)}} value={color.hexValue}/>
-                                                            <input type="button" onClick={()=>RemoveDefaultColor(index)} value="x"/>
+                                                return (<span className="owner-add-colors-container" key={index}>
+                                                            <div className="owner-add-color-inner">
+                                                                <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={(e) => {setFieldValue(`colors[${index}].hexValue`, e.target.value)}} value={color.hexValue}/>
+                                                            </div>
+                                                            <div className="owner-add-color-inner">
+                                                                <button type="button" className="owner-remove-color-btn hide-remove-color" onClick={()=>RemoveDefaultColor(index)}></button>
+                                                            </div>
                                                         </span>        
                                             )})}  
                                             {colorsArrayLength.map((color, index) => {
-                                                return (<span key={index}>
-                                                            <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={(e) => {setFieldValue(`colors[${index}].hexValue`, e.target.value)}} defaultValue={color.hexValue}/>
-                                                            <input type="button" onClick={()=>RemoveNewColor(index)} value="x"/>
+                                                return (<span className="owner-add-colors-container" key={index}>
+                                                            <div className="owner-add-color-inner">
+                                                                <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={(e) => {setFieldValue(`colors[${index}].hexValue`, e.target.value)}} defaultValue={color.hexValue}/>
+                                                            </div>
+                                                            <div className="owner-add-color-inner">
+                                                                <p className="owner-remove-color-btn hide-remove-color" onClick={()=>RemoveNewColor(index)}>
+                                                                    <img src={remove} style={{width:"13px", height:"13px"}}/>
+                                                                </p>
+                                                            </div>
                                                         </span>        
                                             )})}
                                         </div>                       
@@ -204,34 +215,46 @@ const UpdateProduct = (props) => {
                                     </div>
 
                                     <div className="sizesField">
-                                        <label className="lbl-update-sizes">Sizes</label>
+                                        <label className="update-lbl-sizes">Sizes</label>
                                         <div style={{width:"600px", display: "flex", flexWrap: "wrap"}}>
                                             {sizesArray.map((size, index) => {
-                                                return (<Fragment key={index}>
-                                                            <input className="udt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={(e) => {setFieldValue(`sizes[${index}]`, e.target.value)}} value={size}/>
-                                                            <input type="button" className="remove-btn" onClick={()=>RemoveDefaultSize(index)} value="remove"/>
-                                                        </Fragment>        
+                                                return (<div className="owner-add-sizes-container" key={index}>
+                                                            <div className="owner-add-size-inner">
+                                                                <input className="udt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={(e) => {setFieldValue(`sizes[${index}]`, e.target.value)}} value={size}/>
+                                                            </div>
+                                                            <div className="owner-add-size-inner">
+                                                                <button type="button" className="owner-remove-size-btn hide-remove-sizes" onClick={()=>RemoveDefaultSize(index)}></button>
+                                                            </div>
+                                                        </div>        
                                             )})}
                                             {sizesArrayLength.map((size, index) => {
-                                                return (<Fragment key={index}>
-                                                            <input className="udt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={(e) => {setFieldValue(`sizes[${index}]`, e.target.value)}} defaultValue={size}/>
-                                                            <input type="button" className="remove-btn" onClick={()=>RemoveNewSize(index)} value="remove"/>
-                                                        </Fragment>        
+                                                return (<div className="owner-add-sizes-container" key={index}>
+                                                            <div className="owner-add-size-inner">
+                                                                <input className="udt-sizes" placeholder="Sizes" name={`sizes[${index}]`} onChange={(e) => {setFieldValue(`sizes[${index}]`, e.target.value)}} defaultValue={size}/>
+                                                            </div>
+                                                            <div className="owner-add-size-inner">
+                                                                <p className="owner-remove-size-btn hide-remove-sizes" onClick={()=>RemoveNewSize(index)}>
+                                                                    <img src={remove} style={{width:"20px", height:"20px"}}/>
+                                                                </p>
+                                                            </div>
+                                                        </div>        
                                             )})} 
                                         </div>                         
                                         <input type="button"  className="add-size" onClick={AddSize} value="Add Size"/>
                                     </div>
                                     
                                     <div className="descriptionField">
-                                        <label className="lbl-description">Description</label>
-                                        <textarea className="ipt-description" placeholder="Description" name="description" onChange={handleChange} value={product.description}/>
+                                        <label className="update-lbl-description">Description</label>
+                                        <textarea className="update-ipt-description" placeholder="Description" name="description" onChange={handleChange} value={product.description}/>
+                                    </div>
 
-                                        <label className="lbl-categories">Categories</label>
-                                        <input className="upt-categories" placeholder="Categories" name="categories" onChange={handleChange} value={product.categories}/>
+                                    <div>
+                                        <label className="update-lbl-categories">Categories</label>
+                                        <input className="update-ipt-categories" placeholder="Categories" name="categories" onChange={handleChange} value={product.categories}/>
                                     </div>
                                     
                                     <div className="picturesField">
-                                        <label className="lbl-pictures">Pictures</label>
+                                        <label className="update-lbl-pictures">Pictures</label>
 
                                         <Dropzone  accept="image/*" onDrop={(acceptedFiles) => {
                                             // do nothing if no files
@@ -275,12 +298,12 @@ const UpdateProduct = (props) => {
                                     </div>
 
                                     <div>
-                                        <label className="">Featuring From</label>
-                                        <input className="upt-featuringFrom" type="text"  name="featuringFrom" onChange={handleChange} value={product.featuringFrom}/>
+                                        <label className="update-lbl-featuringFrom">Featuring From</label>
+                                        <input className="update-ipt-featuringFrom" type="text"  name="featuringFrom" onChange={handleChange} value={product.featuringFrom}/>
                                         {errors.featuringFrom && touched.featuringFrom && errors.featuringFrom}
 
-                                        <label className="">Featuring To</label>           
-                                        <input className="upt-featuringTo" type="text" name="featuringTo" onChange={handleChange} value={product.featuringTo}/>
+                                        <label className="update-lbl-featuringTo">Featuring To</label>           
+                                        <input className="update-ipt-featuringTo" type="text" name="featuringTo" onChange={handleChange} value={product.featuringTo}/>
                                     </div>
 
                                     <div>

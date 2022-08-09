@@ -24,6 +24,7 @@
     position: relative;
     left:300px;
 }
+/*buttons*/
 .cancel{
     box-sizing: border-box;
 
@@ -68,28 +69,8 @@
     color: #FFFFFF;
     border: 2.5px solid #FF993C;
 }
-.remove-btn{
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 4px 5px;
-    font-size: 13px;
-    background-color: #FFFFFF;
-    color:#FF993C ;
-    
-    font-weight: 700;
-    
-    line-height: 26px;
-
-    position: relative;
-    width: 80px;
-    height: 30px;
-
-    border: 2px solid #FF993C;
-    border-radius: 8px;
-    cursor: pointer;
-}
+/*sizes*/
 .udt-sizes{
     width: 40px;
 }
@@ -97,4 +78,11 @@
     position: relative;
     top: -30px;
     left: 20px;
+}
+
+/*description*/
+.update-ipt-description{
+    left:42px;
+    height: 100px;
+    width: 480px;
 }

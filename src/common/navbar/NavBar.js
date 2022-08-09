@@ -39,8 +39,7 @@ const NavBar = () => {
             <div className="header_section">
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                     <Right>
-                        <img src={logo} style={{width: "80px", height: "80px"}} />
-                        <a className="logo" href=""><img src=""/></a>
+                        <a className="logo" href="/"><img src={logo} style={{width: "80px", height: "80px"}} /></a>
                         <div className="collapse navbar-collapse">
                         <ul className="navbar-nav mr-auto">
                             <li className="nav-item">

@@ -1,65 +1,183 @@
 
 .form-add{
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 0px;
     font-size: 15px;
 
     position: absolute;
     width: 80%;
     height: 100%;
     left: 15%;
-    top: -10%;
-
-    box-sizing: border-box;
+    top: 50px;
 
     margin: auto;
-    margin-top: 10%;
+    margin-top: 5%;
   
     background: linear-gradient(135deg, #ffffff, #ffffff);
-    border: 0px;
-    border-radius: 8px;
 }
+/* all input */
 div input{
     justify-content: center;
     align-items: center;
     margin: 5px 0px 5px 0px;
     font-size: 15px;
-
     position: relative;
 }
+/* size */
+.owner-add-size-container{
+    display: flex;
+}
+.owner-add-size-inner{
+    display: inline-block;
+    margin: 3px 3px 0px 0px;
+}
+.owner-remove-size-btn{
+    background: url(../../../common/assets/remove.png) no-repeat 1px;
+    background-size: 20px;
+    background-color: rgb(229, 229, 229);
+    border-radius: 16px;
+    border: 0px;
+    width: 22px;
+    height: 22px;
+    position: relative;
+}
+.owner-remove-size-btn img{
+    position: relative;
+    top: -0.5px;
+    left: 1px;
+}
+.ipt-sizes{
+    width: 100px;
+    left: 0px;
+}
+/* .hide-remove-size{
+    display: none;
+} */
+.hide-remove-size:hover{
+    display: block;
+}
+.ipt-sizes:hover + .hide-remove-size {
+    display: block;
+}
+.ipt-sizes:focus + .hide-remove-size {
+    display: block;
+}
+
+/*name*/
 .ipt-name{
     left:10px;
     width: 240px;
 }
+.error-name{
+    position: relative;
+    top: 20px;
+    font-style: italic;
+    font-size: 12px;
+    color: red;
+    left: -230px;
+}
+
+/* price */
+.lbl-price{
+    position: relative;
+    left: 20px;
+}
 .ipt-price{
-    left:18px;
-    width: 240px;
+    left:25px;
+    width: 100px;
+}
+.error-price{
+    position: relative;
+    top: 20px;
+    font-style: italic;
+    font-size: 12px;
+    color: red;
+    left: -75px;
+}
+
+/* stock */
+.lbl-stock{
+    position: relative;
+    left: 40px;
 }
 .ipt-stock{
-    left:15px;
-    width: 240px;
+    left:50px;
+    width: 100px;
 }
-.ipt-sizes{
-    display: flex;
-    flex-direction: row;
+.error-stock{
+    position: relative;
+    top: 20px;
+    font-style: italic;
+    font-size: 12px;
+    color: red;
+    left: -50px;
+}
 
-    width: 305px;
-    left: 0px;
+/*description*/
+.lbl-description{
+    position: relative;
+    top: -90px;
 }
 .ipt-description{
-    left:42px;
+    left: 0px;
+    height: 100px;
+    width: 525px;
 }
+
+/*categories*/
 .ipt-categories{
     left:48px
+}
+
+/*featuring*/
+.lbl-featuringTo{
+    position: relative;
+    left: 30px;
 }
 .ipt-featuringFrom{
     left:10px
 }
 .ipt-featuringTo{
-    left:33px
+    left:40px
+}
+
+/*color*/
+.colorField{
+    position: relative;
+    top: 20px;
+}
+.owner-add-color-inner{
+    display: inline-block;
+    margin: 3px 3px 0px 0px;
+}
+.owner-remove-color-btn{
+    background: url(../../../common/assets/remove.png) no-repeat 1px;
+    background-size: 13px;
+    background-color: rgb(229, 229, 229);
+    border-radius: 16px;
+    border: 0px;
+    width: 15px;
+    height: 15px;
+    position: relative;
+    top: -17px;
+    left: -14px;
+    cursor: pointer;
+}
+.owner-remove-color-btn img{
+    position: relative;
+    top: -4px;
+    left: 1px;
+}
+/* .hide-remove-color{
+    display: none;
+} */
+.hide-remove-color:hover{
+    display: block;
+}
+.ipt-color-hex:hover + .hide-remove-color {
+    display: block;
+}
+.ipt-color-hex:focus + .hide-remove-color {
+    display: block;
 }
 .add-color{
     box-sizing: border-box;
@@ -163,4 +281,48 @@ div input{
 .ipt-color-hex::-moz-color-swatch{
     border-radius: 8px;
     border:none;
+}
+
+/*add images*/
+input[type=file]::-webkit-file-upload-button {
+    visibility: hidden;
+}
+#file[type="file"] {
+	display: none;
+}
+.label-holder {
+	width: 100%;
+	height: 50px;
+  margin-top: 3em;
+  display: grid;
+  place-items: center;
+  
+}
+.label{
+  height: 50px;
+  width: 200px;
+  background-color:#2a3eb1;
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 2.5rem ;
+  cursor: pointer;
+  
+}
+
+.result{
+    height: auto;
+    width: 100%;
+    margin-top:1rem ;
+     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: left; 
+    
+  }
+
+.result img{
+    width: 320px;
+    height: 180px;
+    padding: 0.75rem;
 }
