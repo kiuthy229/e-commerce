@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./NavBar.css"
 import { FaShoppingCart, FaSearch } from 'react-icons/fa';
 import styled from "styled-components";
+import logo from '../assets/logo.png';
 //import { Viewallproducts } from "../../pages/browse/ProductsCard/ProductsCard";
 //import { gql } from '@apollo/client';
 
@@ -70,6 +71,7 @@ const NavBar = () => {
             <div className="header_section">
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                     <Right>
+                        <img src={logo} style={{width: "80px", height: "80px"}} />
                         <a className="logo" href=""><img src=""/></a>
                         <div className="collapse navbar-collapse">
                         <ul className="navbar-nav mr-auto">

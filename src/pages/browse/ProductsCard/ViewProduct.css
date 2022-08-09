@@ -21,7 +21,7 @@
   display: flex;
   justify-content: flex-start;
   margin-left: 200px;
-  margin-top: 20px;
+  margin-top: 10px;
   flex-wrap: wrap;
   width: 80%;
 
@@ -176,7 +176,7 @@
   border-radius: 50px;
   float: left;
   height: 5px;
-  margin-top: 14px;
+  margin-top: 12px;
   width: 100%;
 }
 
@@ -188,11 +188,15 @@
 }
 
 .price-box-slider p input{
-  margin-top: 5px;
+  margin-top: 10px;
   width: 200px;
 }
 .price-box-slider p button{
   border: none;
   color: #b0b435;
   float: right;
+}
+.side-bar {
+  flex-direction: column;
+  width: 200px;
 }

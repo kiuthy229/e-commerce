@@ -2,7 +2,6 @@ import { React } from 'react';
 import { IoIosAdd, IoMdRemove } from "react-icons/io";
 //import { Add, Remove } from "@material-ui/icons";
 import styled from "styled-components";
-import Navbar from "../SearchBox/Navbar";
 
 const Container = styled.div``;
 
@@ -114,7 +113,6 @@ const Button = styled.button`
 const Product = () => {
   return (
     <Container>
-      <Navbar />
       <Wrapper>
         <ImgContainer>
           <Image src="https://i.ibb.co/S6qMxwr/jean.jpg" />
