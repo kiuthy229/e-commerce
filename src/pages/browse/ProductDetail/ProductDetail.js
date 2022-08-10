@@ -23,6 +23,7 @@ const Product = () => {
   const productID = params.id
   const [product, setProduct] = useState({})
   const [pictures, setPictures] = useState([])
+  var quantity = 0
   const [sizes, setSizes] = useState([])
   const [colors, setColors] = useState([])
   const [selectedSize, setSelectedSize] = useState("")
@@ -60,10 +61,27 @@ const Product = () => {
             color: selectedColor,
             productId: productID,
             size: selectedSize,
-            quantity: 1
+            quantity: quantity
           } 
         }
       })
+  }
+
+  //Decrease quantity
+  const decreaseQuantity = (index) => {
+    var value = parseInt(document.getElementById('detail-input').value, 10);
+    value = isNaN(value) ? 0 : value;
+    value--;
+    document.getElementById('detail-input').value = value;
+    quantity = value
+  }
+  //Increase quantity
+  const increaseQuantity = (index) => {
+    var value = parseInt(document.getElementById('detail-input').value, 10);
+    value = isNaN(value) ? 0 : value;
+    value++;
+    document.getElementById('detail-input').value = value;
+    quantity = value
   }
 
   useEffect(()=>{
@@ -109,9 +127,9 @@ const Product = () => {
             <div className="detail-add-container">
             <div className="detail-filter-title">Quantity</div>
               <div className="detail-amount-container">
-                <button className="detail-button"><IoMdRemove /></button>
-                <input className="detail-input"/>
-                <button className="detail-button"><IoIosAdd /></button>
+                <button className="detail-button" onClick={decreaseQuantity}><IoMdRemove /></button>
+                <input className="detail-input" id="detail-input" value="0"/>
+                <button className="detail-button" onClick={increaseQuantity}><IoIosAdd /></button>
               </div>
               <button className="detail-add-cart-btn" onClick={AddToCart}>ADD TO CART</button>
             </div>
