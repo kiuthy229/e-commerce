@@ -13,16 +13,25 @@
 .nav-bar {
     display: flex;
 }
+.search-bar {
+  flex            : 1;
+  display         : flex;
+  height          : 40px;
+  background-color: rgb(245, 245, 245);
+  border-radius   : 2px;
+  padding: 5px;
+}
 #search {
     justify-content: right;
     border: none;
+    margin-left: 40px;
     background: none;
-    font-size: 15px;
+    font-size: 20px;
 }
 #searchbar__input {
   outline: none;
   border-bottom: #41612c solid 2px;
-  padding-right: 8px;
+  padding-right: 0px;
   font-size: 15px;
 }
 .card-container {
@@ -31,6 +40,8 @@
   max-width: 1300px;
   margin-top: 0px;
   justify-content: space-between;  
+  margin-right: 0px;
+  margin-left: 280px;
 }
 .product-card {
   position: relative;
@@ -135,4 +146,100 @@
 .side-bar {
   flex-direction: column;
   width: 200px;
+}
+
+/* Product Details Styling */
+.detail-container {
+  margin-top: 60px;
+}
+.detail-wrapper {
+  padding: 50px;
+  display: flex;
+}
+.detail-img-container {
+  flex: 1;
+}
+.detail-image {
+  width: 80%;
+  height: 90vh;
+  object-fit: cover;
+  position: relative;
+  left: 150px;
+}
+.detail-info-container {
+  flex: 1;
+  padding: 0px 50px;
+}
+.detail-title {
+  font-weight: 500;
+  color: #476930;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 40px;
+}
+.detail-desc {
+  margin: 20px 0px;
+  font-size: 20px;
+  text-align: justify;
+  text-justify: inter-word;
+}
+.detail-price {
+  font-weight: 100;
+  font-size: 40px;
+  color: #597d35;
+}
+.detail-filter-container {
+  width: 50%;
+  margin: 30px 0px;
+  display: flex;
+  justify-content: space-between;
+}
+.detail-filter {
+  display: flex;
+  align-items: center;
+}
+.detail-filter-title {
+  font-size: 20px;
+  font-weight: 200;
+}
+.detail-filter-color {
+
+}
+.detail-filter-size {
+  margin-left: 10px;
+  padding: 5px 8px;
+  border:solid 2px#597d35;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.detail-add-container {
+  width: 80%;
+  display: flex;
+  /* align-items: center; */
+  justify-content: space-around;
+  gap: 30px;
+}
+.detail-amount-container {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+}
+.detail-input {
+  width: 80px;
+  height: 30px;
+  border: 2px solid teal;
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between;
+  margin: 0px 10px; */
+  text-align: center;
+}
+.detail-button {
+  padding: 2px;
+  border: 2px solid rgb(128, 94, 0);
+  background-color: white;
+  cursor: pointer;
+  font-weight: 500;
+}
+.detail-button :hover {
+  background-color: #f8f4f4;
 }

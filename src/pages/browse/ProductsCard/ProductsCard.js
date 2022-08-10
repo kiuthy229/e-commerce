@@ -29,7 +29,7 @@ const SearchContainer = styled.div`
   display: flex;
   align-items: center;
   margin-left: 0ox;
-  padding: 5px 15px;
+  padding: 5px 150px 5px 10px;
   margin-top: 100px;
 `;
 const Input = styled.input`

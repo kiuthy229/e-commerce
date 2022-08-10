@@ -6,13 +6,6 @@
     color: #df9911;
 }
 /* Search bar */
-.search-bar {
-    flex            : 1;
-    display         : flex;
-    height          : 40px;
-    background-color: white;
-    border-radius   : 2px;
-}
 .searchbar__input {
     width   : calc(100% - 60px);
     position: relative;
@@ -45,7 +38,7 @@
 
 .header_section{
   position: fixed;
-  z-index: 10;
+  z-index: 12;
   top: 0px;
   width: 100%;
 }

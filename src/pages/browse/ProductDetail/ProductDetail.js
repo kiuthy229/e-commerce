@@ -7,13 +7,13 @@ import { GET_PRODUCT } from "../../../data/queries/get-product";
 import { useMutation } from '@apollo/client';
 import { ADD_TO_CART_MUTATION } from "../../../data/mutations/add-to-cart";
 import { borderRadius } from '@mui/system';
+import '../ProductsCard/ViewProduct.css';
 
 const Container = styled.div`
-  margin-top: 50px;
+  
 `;
 const Wrapper = styled.div`
-  padding: 50px;
-  display: flex;
+  
   
 `;
 
@@ -22,20 +22,16 @@ const ImgContainer = styled.div`
 `;
 
 const Image = styled.img`
-  width: 100%;
-  height: 90vh;
-  object-fit: cover;
+  
  
 `;
 
 const InfoContainer = styled.div`
-  flex: 1;
-  padding: 0px 50px;
- 
+  
 `;
 
 const Title = styled.h1`
-  font-weight: 200;
+  
 `;
 
 const Desc = styled.p`
@@ -43,15 +39,11 @@ const Desc = styled.p`
 `;
 
 const Price = styled.span`
-  font-weight: 100;
-  font-size: 40px;
+  
 `;
 
 const FilterContainer = styled.div`
-  width: 50%;
-  margin: 30px 0px;
-  display: flex;
-  justify-content: space-between;
+ 
 
 `;
 
@@ -61,8 +53,7 @@ const Filter = styled.div`
 `;
 
 const FilterTitle = styled.span`
-  font-size: 20px;
-  font-weight: 200;
+  
 `;
 
 const FilterColor = styled.div`
@@ -75,15 +66,11 @@ const FilterColor = styled.div`
 `;
 
 const FilterSize = styled.select`
-  margin-left: 10px;
-  padding: 5px;
+ 
 `;
 
 const AddContainer = styled.div`
-  width: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+ 
 
 `;
 
@@ -93,7 +80,7 @@ const AmountContainer = styled.div`
   font-weight: 700;
 `;
 
-const Amount = styled.span`
+const input = styled.span`
   width: 30px;
   height: 30px;
   border-radius: 10px;
@@ -171,52 +158,52 @@ const Product = () => {
   }, [selectedSize, selectedColor])
 
   return (
-    <Container>
+    <div className="detail-container">
       {data && 
-        <Wrapper>
-          <ImgContainer>
-              <img className="product-pic" src={process.env.PUBLIC_URL + "logo192.png"}/>
-          </ImgContainer>
-          <InfoContainer>
-            <Title>{product.name}</Title>
-            <Desc>{product.description}</Desc>
-            <Price>$ {product.price}</Price>
-            <FilterContainer>
-              <Filter>
-                <FilterTitle>Colors</FilterTitle>
+        <div className="detail-wrapper">
+          <div className="detail-img-container">
+              <img className="detail-image" src={process.env.PUBLIC_URL + "logo192.png"}/>
+          </div>
+          <div className="detail-info-container">
+            <div className="detail-title">{product.name}</div>
+            <div className="detail-desc">{product.description}</div>
+            <div className="detail-price">$ {product.price}</div>
+            <div className="detail-filter-container">
+              <div className="detail-filter">
+                <div className="detail-filter-title">Colors</div>
                 {colors.map((color)=>
-                    <div  key={color.hexValue} 
-                          style={{backgroundColor:color.hexValue, borderRadius:"50%", padding:"10px", border:"1px solid", cursor:"pointer", margin:"2px"}} 
+                    <FilterColor  key={color.hexValue} 
+                          style={{backgroundColor:color.hexValue, borderRadius:"50%", padding:"10px", border:"1px solid", cursor:"pointer", margin:"0px 10px"}} 
                           disabled
                           onClick={(e)=>setSelectedColor(color.hexValue)}>
-                    </div>
+                    </FilterColor>
                 )}
-              </Filter>
-            </FilterContainer>
-            <FilterContainer>
-              <Filter>
-                <FilterTitle>Sizes</FilterTitle>
+              </div>
+            </div>
+            <div className="detail-filter-container">
+              <div className="detail-filter">
+                <div className="detail-filter-title">Sizes</div>
                 {sizes.map((size, index)=>
-                    <p  key={index} 
-                        style={{border:"1px solid", borderRadius:"8px", padding:"5px", cursor:"pointer"}}
+                    <p  className="detail-filter-size"
+                        key={index} 
                         onClick={(e)=>setSelectedSize(size)}>
                           {size}
                     </p>
                 )}
-              </Filter>
-            </FilterContainer>
-            <AddContainer>
-              <AmountContainer>
-                <IoMdRemove />
-                <Amount>1</Amount>
-                <IoIosAdd />
-              </AmountContainer>
+              </div>
+            </div>
+            <div className="detail-add-container">
+              <div className="detail-amount-container">
+                <button className="detail-button"><IoMdRemove /></button>
+                <input className="detail-input"/>
+                <button className="detail-button"><IoIosAdd /></button>
+              </div>
               <Button onClick={AddToCart}>ADD TO CART</Button>
-            </AddContainer>
-          </InfoContainer>
-        </Wrapper>
+            </div>
+          </div>
+        </div>
       }
-    </Container>
+    </div>
   );
 };
 
