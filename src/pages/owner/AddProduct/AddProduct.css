@@ -68,12 +68,12 @@ div input{
     width: 240px;
 }
 .error-name{
-    position: relative;
-    top: 20px;
+    position: absolute;
+    top: 85px;
     font-style: italic;
     font-size: 12px;
     color: red;
-    left: -230px;
+    left: 50px;
 }
 
 /* price */
@@ -86,12 +86,12 @@ div input{
     width: 100px;
 }
 .error-price{
-    position: relative;
-    top: 20px;
+    position: absolute;
+    top: 85px;
     font-style: italic;
     font-size: 12px;
     color: red;
-    left: -75px;
+    left: 340px;
 }
 
 /* stock */
@@ -104,12 +104,12 @@ div input{
     width: 100px;
 }
 .error-stock{
-    position: relative;
-    top: 20px;
+    position: absolute;
+    top: 85px;
     font-style: italic;
     font-size: 12px;
     color: red;
-    left: -50px;
+    left: 500px;
 }
 
 /*description*/
@@ -122,6 +122,14 @@ div input{
     height: 100px;
     width: 525px;
 }
+.error-description{
+    position: relative;
+    top: 10px;
+    left: -525px;
+    font-style: italic;
+    font-size: 12px;
+    color: red;
+}
 
 /*categories*/
 .ipt-categories{
@@ -131,13 +139,34 @@ div input{
 /*featuring*/
 .lbl-featuringTo{
     position: relative;
-    left: 30px;
+    top: 10px;
+    left: 0px;
 }
 .ipt-featuringFrom{
     left:10px
 }
 .ipt-featuringTo{
-    left:40px
+    top: 10px;
+    left:29px
+}
+.featuring-inner{
+    display: inline-block;
+}
+.error-featuringFrom{
+    position: relative;
+    top: 20px;
+    left: -290px;
+    font-style: italic;
+    font-size: 12px;
+    color: red;
+}
+.error-featuringTo{
+    position: relative;
+    top: 30px;
+    left: -270px;
+    font-style: italic;
+    font-size: 12px;
+    color: red;
 }
 
 /*color*/
@@ -206,6 +235,14 @@ div input{
     border-radius: 8px;
     cursor: pointer;
 }
+.error-color{
+    position: absolute;
+    top: 5px;
+    left: 50px;
+    font-style: italic;
+    font-size: 12px;
+    color: red;
+}
 .add-size{
     box-sizing: border-box;
 
@@ -234,6 +271,8 @@ div input{
     cursor: pointer;
 }
 .add-product{
+    position: relative;
+    top: 25px;
     box-sizing: border-box;
 
     display: flex;

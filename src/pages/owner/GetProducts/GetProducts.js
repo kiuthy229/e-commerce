@@ -9,7 +9,7 @@ import './GetProducts.css'
 import NavBar from "../../../common/navbar/NavBar";
 
 const GetProducts = () => {
-    const {error, loading, data} = useQuery(LOAD_PRODUCTS)
+    const {error, loading, data, refetch} = useQuery(LOAD_PRODUCTS)
     const [removeProduct, result] = useMutation(REMOVE_PRODUCT_MUTATION)
     const [products, setProducts] = useState([])
     const [openUpdate,setOpenUpdate] = useState(false)
@@ -37,36 +37,23 @@ const GetProducts = () => {
             variables: {
                 id: productID,
             }
-        })
+        }).then(refetch)
         console.log("removed")
         if (result.error) {
             console.log(result.error)
         }
     }
 
-    const sizeTag = {
-        backgroundColor: "#EAF1F8",
-        border: "0.5px solid #919DBA",
-        borderRadius: "4px",
-        width: "15px",
-        height: "15px",
-        margin:"2px",
-        fontSize: "12px",
-        justifyContent:"center",
-        alignItems: "center",
-        color:"#919DBA",
-        padding:"3px 5px 2px 5px",
-        flexWrap:"wrap"
-    };
-
     const openPopupUpdate = (productID) => {
         setOpenUpdate(true);
         setProductId(productID);
+        refetch();
     }
 
     const togglePopupUpdate= () => {
         setOpenUpdate(!openUpdate);
         document.getElementsByClassName("product-list").fadeOut(200);
+        refetch();
       }
 
     return (
