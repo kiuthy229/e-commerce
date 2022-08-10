@@ -144,7 +144,7 @@ const UpdateProduct = (props) => {
                                     price: parseInt(product.price),
                                     stock: parseInt(product.stock),
                                     description: product.description,
-                                    categories: product.categories,
+                                    categories: product.categories.split(','),
                                     pictures: selectedPictures.concat(picturesArray.map((file) => file)),
                                     colors: colorsUpdate,
                                     sizes: values.sizes.map((size) => size).concat(sizesArray.map((size) => size)),

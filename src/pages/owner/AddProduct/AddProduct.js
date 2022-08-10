@@ -109,7 +109,6 @@ const AddProduct = () => {
             }}
 
             onSubmit={(values, { setSubmitting }) => {
-                console.log(pictures)
                 setTimeout(() => {
                     alert(JSON.stringify(values, null, 2));
                     createProduct({
@@ -118,7 +117,7 @@ const AddProduct = () => {
                             price: parseInt(values.price),
                             stock: parseInt(values.stock),
                             description: values.description,
-                            categories: values.categories,
+                            categories: values.categories.split(','),
                             pictures: selectedPictures,
                             colors: values.colors.map((color)=>({ name: GetColorName(color.hexValue), hexValue: color.hexValue })),
                             sizes: values.sizes.map((size) => size),
@@ -178,7 +177,6 @@ const AddProduct = () => {
                         };
                     
                         const renderPhotos = (source) => {
-                            console.log('source: ', source);
                             return source.map((photo) => {
                                 return <img src={photo} alt="" key={photo}/>;
                             });
