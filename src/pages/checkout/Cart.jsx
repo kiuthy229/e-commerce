@@ -4,7 +4,7 @@ import { useNavigate, UNSAFE_NavigationContext as NavigationContext } from 'reac
 import { Product } from './ProductInfo';
 import { Fee } from './Fee';
 import './Cart.css';
-import { Formik, Form, Field, FieldArray } from 'formik';
+import { Formik, Form, Field, FieldArray, getIn, ErrorMessage } from 'formik';
 import NavBar from "../../common/navbar/NavBar";
 import { Overlay, Tooltip, Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -75,8 +75,14 @@ mutation EmptyCart($customerId: ID!) {
 }
 `
 export function Cart() {
+  //get userID from homepage
+  const [customerId, setCustomerId] = useState(() => {
+    const saved = window.localStorage.getItem("customerID");
+    const initialValue = JSON.parse(saved);
+    return initialValue || "";
+  })
 
-  // reduce function
+  // reduce function: group items with similar id
   var groupBy = function (xs, key) {
     return xs.reduce(function (rv, x) {
       (rv[x[key]] = rv[x[key]] || []).push(x);
@@ -84,11 +90,11 @@ export function Cart() {
     }, {});
   };
 
-
+  //check redirect to another page
   const navigate = useNavigate();
   const getCart = useQuery(GET_CART, {
     variables: {
-      customerId: 1
+      customerId: customerId
     }
   });
   const [showPopupName, setShowPopupName] = useState(false);
@@ -115,12 +121,14 @@ export function Cart() {
   const [updateCustomer, updateCustomerResult] = useMutation(UPDATE_CUSTOMER);
   const [updateQuantityDB, QuantityDBResult] = useMutation(UPDATE_QUANTITY_DB);
   const [emptyCart, emptyCartResult] = useMutation(EMPTY_CART);
+
+  //Call function to check redirecting
   usePrompt("Leave screen?", isBlocking);
   useEffect(() => {
     const getItemGrouped = async () => {
       getLazyCart({
         variables: {
-          customerId: 1
+          customerId: customerId
         }
       })
         .then(
@@ -150,7 +158,6 @@ export function Cart() {
             for (var arr of itemgroup) {
               let itemQuantity = arr[1]
               let anItem = arr[1][0]
-              console.log('arr', arr)
               let count = 0;
               for (var iq of itemQuantity) {
                 count += iq.quantity
@@ -192,13 +199,6 @@ export function Cart() {
     }
     getItemGrouped();
   }, [getProduct, getLazyCart, getLazyFee, setListQuantity, setCustomer, setShipping, setSubTotal, setTotal, setTax]);
-  // console.log('tax ', tax)
-  // console.log('shipping ', shipping)
-  // console.log('sub total  ', subTotal)
-  // console.log(' total  ', total)
-  //console.log('cust', customer)
-  console.log('list stock ', listStock)
-  console.log('list price ', listPrice)
 
   if (getCart.loading) return <div>Loading...</div>
   if (updateCustomerResult.loading) return <div>Submitting...</div>
@@ -207,334 +207,282 @@ export function Cart() {
   if (!customer) return <div>Loading... </div>
   else
     return (
-      <div className='body'>
-        <Formik
-          enableReinitialize={true}
-          initialValues={{
-            customer: { ...customer.customer }
-          }}
-          validate={values => {
-            const errors = {};
-            if (!values.customer.name) {
-              errors.customerName = 'Required';
-              console.log('invalid name')
-            }
-            if (values.customer.name.length >= 50) {
-              errors.customerName = 'Name too long';
-              console.log('Name too long')
-            }
-            if (!values.customer.location) {
-              console.log('invalid loc')
-              errors.location = 'Required';
-            }
-            return errors;
-          }}
-          onSubmit={(values) => {
-            setIsBlocking(false);
-            console.log(values.customer);
-            updateCustomer({
-              variables: {
-                customer: values.customer
-              }
-            }).then(
-              (value) => {
-                getLazyCart({
-                  variables: {
-                    customerId: value.data.updateCustomer.id
-                  }
-                }).then(
-                  async (value) => {
-                    for (var product of value.data.customer.items.map(item => item)) {
-                      var currentQuantity = 0;
-                      await getProduct({
-                        variables: {
-                          productId: product.productId
-                        }
-                      }).then(
-                        value => {
-                          currentQuantity = value.data.product.stock;
-                          console.log('get product: ', value)
-                        }
-                      )
-                      console.log(currentQuantity)
+      <Formik
+        enableReinitialize={true}
+        initialValues={{
+          customer: { ...customer.customer }
+        }}
+        validate={values => {
+          let errors = {};
+          let empErrors = {};
+          if (!values.customer.name) {
+            empErrors.name = 'Required'
+            errors.customer = empErrors;
+          }
+          if (values.customer.name.length >= 50) {
+            empErrors.name = 'Name too long';
+            errors.customer = empErrors;
+          }
+          if (!values.customer.location) {
+            empErrors.location = 'Required';
+            errors.customer = empErrors;
+          }
+          return errors;
+        }}
 
-                      await updateQuantityDB({
-                        variables: {
-                          product: {
-                            id: product.productId,
-                            stock: currentQuantity - product.quantity
-                          }
-                        }
-                      }).then(
-                        value => {
-                          console.log('update in db: ', value);
-                        }
-                      )
-                      console.log('final', currentQuantity - product.quantity)
-
-                    }
-                    console.log('customer get lazy cart', value)
-                    await emptyCart({
+        //Submit logic
+        onSubmit={(values) => {
+          setIsBlocking(false);
+          updateCustomer({
+            variables: {
+              customer: values.customer
+            }
+          }).then(
+            (value) => {
+              getLazyCart({
+                variables: {
+                  customerId: value.data.updateCustomer.id
+                }
+              }).then(
+                async (value) => {
+                  for (var product of value.data.customer.items.map(item => item)) {
+                    var currentQuantity = 0;
+                    await getProduct({
                       variables: {
-                        customerId: 1
+                        productId: product.productId
+                      }
+                    }).then(
+                      value => {
+                        currentQuantity = value.data.product.stock;
+                      }
+                    )
+
+                    await updateQuantityDB({
+                      variables: {
+                        product: {
+                          id: product.productId,
+                          stock: currentQuantity - product.quantity
+                        }
                       }
                     })
-                    navigate('/success', { replace: true })
                   }
-                )
-                console.log('checkout success get cust id: ', value.data.updateCustomer.id);
-              }
-            )
-          }}
-        >
-          {
-            ({
-              values,
-              errors,
-              touched,
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              isSubmitting,
-              setFieldValue
-            }) => (
-              <Form
-                onSubmit={handleSubmit}
-              >
-                <div className='container'>
-                  <div>
-                    <div ref={containerName}>
-                      <Field
-                        type='text'
-                        name='customer.name'
-                        placeholder='Customer Name'
-                        onChange={(e) => {
-                          handleChange(e);
-                          setIsBlocking(true)
-                          if (e.target.value.length > 50) {
-                            setShowPopupName(true)
-                          }
-                        }}
-                        onBlur={(e) => {
-                          handleBlur(e);
-                          if (!e.target.value) {
-                            setShowPopupName(true);
-                          } else {
-                            setShowPopupName(false);
-                          }
-                        }}
-                        ref={targetName}
-                        value={values.customer.name}
-                      />
-                      <Overlay target={targetName.current} show={showPopupName} placement='right' container={containerName}>
-                        {(props) => (
-                          <Tooltip {...props} ref={targetName}>
-                            String less than 50 characters, required
-                          </Tooltip>
-                        )}
-                      </Overlay>
-                    </div>
+                  await emptyCart({
+                    variables: {
+                      customerId: customerId
+                    }
+                  })
+                  navigate('/success', { replace: true })
+                }
+              )
+            }
+          )
+        }}
+      >
+        {
+          ({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+            setFieldValue
+          }) => (
+            <Form id='checkoutForm'
+              onSubmit={handleSubmit}
+            >
+              <div className='customerInfo'>
+                <div className='title'>Customer Detail</div>
+                <div>Username</div>
+                <Field
+                  className='textField'
+                  type='text'
+                  name='customer.name'
+                  placeholder='Customer Name'
+                  onChange={(e) => {
+                    handleChange(e);
+                    setIsBlocking(true)
+                    if (e.target.value.length > 50) {
+                      setShowPopupName(true)
+                    }
+                  }}
+                  onBlur={(e) => {
+                    handleBlur(e);
+                    if (!e.target.value) {
+                      setShowPopupName(true);
+                    } else {
+                      setShowPopupName(false);
+                    }
+                  }}
+                  value={values.customer.name}
+                />
+                <ErrorMessage name='customer.name' style={{ "color": "red" }}></ErrorMessage>
+                <div>Location</div>
+                <Field
+                  error={errors.location}
+                  className='textField'
+                  type='text'
+                  name='customer.location'
+                  placeholder='Location'
+                  ref={targetLocation}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setIsBlocking(true)
+                    let tmpShipping = 0;
+                    let tmpTax = 0;
+                    getLazyFee({
+                      variables: {
+                        location: e.target.value
+                      }
+                    })
+                      .then(
+                        async value => {
+                          tmpShipping = (value.data?.fee.shipping)
+                          tmpTax = (value.data?.fee.tax)
+                          setShipping(value.data?.fee.shipping);
+                          setTax(value.data?.fee.tax)
+                        }
+                      )
+                      .then(
+                        async () => {
+                          setTotal(subTotal + subTotal * tmpTax + tmpShipping)
+                        }
+                      )
+                  }}
+                  onBlur={(e) => {
+                    handleBlur(e);
+                    if (!e.target.value) {
+                      setShowPopupLocation(true);
+                    } else {
+                      setShowPopupLocation(false);
+                    }
+                  }}
+                  value={values.customer.location}
+                />
+                <ErrorMessage name='customer.location' ></ErrorMessage>
 
-                    {errors.customerName && touched.customerName && errors.customerName}
-                    <div ref={containerLocation}>
-                      <Field
-                        type='text'
-                        name='customer.location'
-                        placeholder='Location'
-                        ref={targetLocation}
-                        onChange={(e) => {
-                          handleChange(e);
-                          setIsBlocking(true)
-                          let tmpShipping = 0;
-                          let tmpTax = 0;
-                          getLazyFee({
-                            variables: {
-                              location: e.target.value
-                            }
-                          })
-                            .then(
-                              async value => {
-                                tmpShipping = (value.data?.fee.shipping)
-                                tmpTax = (value.data?.fee.tax)
-                                setShipping(value.data?.fee.shipping);
-                                setTax(value.data?.fee.tax)
-                              }
-                            )
-                            .then(
-                              async () => {
-                                setTotal(subTotal + subTotal * tmpTax + tmpShipping)
-                              }
-                            )
-                        }}
-                        onBlur={(e) => {
-                          handleBlur(e);
-                          if (!e.target.value) {
-                            setShowPopupLocation(true);
-                          } else {
-                            setShowPopupLocation(false);
-                          }
-                        }}
-                        value={values.customer.location}
-                      />
-                      <Overlay target={targetLocation.current} show={showPopupLocation} placement='right' container={containerLocation}>
-                        {(props) => (
-                          <Tooltip {...props} ref={targetLocation}>
-                            Required
-                          </Tooltip>
-                        )}
-                      </Overlay>
-                    </div>
+              </div>
+              <div className='productInfo'>
+                <div className='title'>Your Cart</div>
+                <div>
+                  {<FieldArray name='customer.items'>
+                    {arrayHelpers => (<div>
+                      {values.customer.items?.map((item, index) => (
+                        <div className='product' id={index}>
+                          <Product productId={item?.productId} />
+                          <div>{item?.color}</div>
+                          <div>{item?.size}</div>
+                          <div>
+                            Quantity
+                            <Field
+                              className='quantityInput'
+                              type='number'
+                              min={0}
+                              max={listStock[index]}
+                              name={`customer.items.${index}.quantity`}
+                              placeholder='Quantity'
+                              onChange={async (e) => {
+                                handleChange(e);
+                                setIsBlocking(true)
+                                //handle update subtotal, total
+                                let tmpQuantity = e.target.value;
+                                let updatedQuantityList = [...listQuantity];
+                                updatedQuantityList[index] = parseInt(e.target.value);
+                                if (tmpQuantity == 0) {
+                                  updatedQuantityList[index] = 1;
+                                  setShowModelQuantity(true);
+                                  setMarkedDelete(index)
+                                }
+                                setListQuantity(updatedQuantityList);
+                                let sum = updatedQuantityList.reduce((r, a, i) => {
+                                  return r + a * listPrice[i]
+                                }, 0);
+                                setSubTotal(sum);
+                                setTotal(sum + sum * tax + shipping);
+                              }}
+                              onBlur={handleBlur}
+                              value={item?.quantity}
+                              validate={(value) => {
+                                let error;
+                                if (value < 0) {
+                                  error = 'Quantity cannot be negative';
+                                }
+                                return error;
+                              }}
+                            />
+                            <Modal id={index} show={markedDelete == index}>
+                              <Modal.Header>
+                                <Modal.Title>Delete item</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>Do you want to delete this item?</Modal.Body>
+                              <Modal.Footer>
+                                <Button variant="secondary" onClick={() => {
+                                  setShowModelQuantity(false);
+                                  item.quantity = 1;
 
-                    {errors.location && touched.location && errors.location}
-
-                  </div>
-                  <div>
-                    {<FieldArray name='customer.items'>
-                      {arrayHelpers => (<div>
-                        {values.customer.items?.map((item, index) => (
-                          <div className='product' id={index}>
-                            <div>
-                              <Field
-                                type='checkbox'
-                                name='customer.items'
-                                onChange={(e) => {
-                                  handleChange(e);
-                                  setIsBlocking(true)
-                                  const value = e.target.checked ? item : null
-                                  if (e.target.checked) {
-                                    arrayHelpers.move(index, values.customer.items.length - 1)
-                                  }
-                                }}
-                              ></Field>
-                            </div>
-                            <div>{item?.color}</div>
-                            <div>{item?.size}</div>
-                            <div>
-                              <Field
-                                type='number'
-                                min={0}
-                                max={listStock[index]}
-                                name={`customer.items.${index}.quantity`}
-                                placeholder='Quantity'
-                                onChange={async (e) => {
-                                  handleChange(e);
-                                  setIsBlocking(true)
-                                  //handle update subtotal, total
-                                  let tmpQuantity = e.target.value;
-                                  console.log('quantity arr ', tmpQuantity);
+                                  setMarkedDelete(-1);
+                                }}>
+                                  Cancel
+                                </Button>
+                                <Button variant="primary" onClick={() => {
+                                  setShowModelQuantity(false);
                                   let updatedQuantityList = [...listQuantity];
-                                  updatedQuantityList[index] = parseInt(e.target.value);
-                                  if (tmpQuantity == 0) {
-                                    updatedQuantityList[index] = 1;
-                                    setShowModelQuantity(true);
-                                    setMarkedDelete(index)
-                                  }
+                                  updatedQuantityList.splice(index, 1);
                                   setListQuantity(updatedQuantityList);
+                                  let updatedPriceList = [...listPrice];
+                                  updatedPriceList.splice(index, 1);
+
+                                  setListPrice(updatedPriceList);
                                   let sum = updatedQuantityList.reduce((r, a, i) => {
-                                    return r + a * listPrice[i]
+                                    return r + a * updatedPriceList[i]
                                   }, 0);
                                   setSubTotal(sum);
                                   setTotal(sum + sum * tax + shipping);
-                                }}
-                                onBlur={handleBlur}
-                                value={item?.quantity}
-                                validate={(value) => {
-                                  let error;
-                                  // if (!value) {
-                                  //   error = 'Required';
-                                  //   console.log('invalid quan')
-                                  // }
-                                  if (value < 0) {
-                                    error = 'Quantity cannot be negative';
-                                    console.log('Quantity cannot be negative')
-                                  }
-                                  return error;
-                                }}
-                              />
-                              <Modal id={index} show={markedDelete == index}>
-                                <Modal.Header>
-                                  <Modal.Title>Delete item</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>Do you want to delete this item?</Modal.Body>
-                                <Modal.Footer>
-                                  <Button variant="secondary" onClick={() => {
-                                    setShowModelQuantity(false);
-                                    item.quantity = 1;
+                                  arrayHelpers.remove(index);
+                                  setMarkedDelete(-1);
+                                }}>
+                                  Delete
+                                </Button>
+                              </Modal.Footer>
+                            </Modal>
 
-                                    setMarkedDelete(-1);
-                                  }}>
-                                    Cancel
-                                  </Button>
-                                  <Button variant="primary" onClick={() => {
-                                    setShowModelQuantity(false);
-                                    let updatedQuantityList = [...listQuantity];
-                                    console.log('updatedQuantityList', updatedQuantityList)
-                                    updatedQuantityList.splice(index, 1);
-                                    console.log('updatedQuantityList aft', updatedQuantityList)
-                                    setListQuantity(updatedQuantityList);
-                                    let updatedPriceList = [...listPrice];
-                                    console.log('updatedPriceList', updatedPriceList)
-                                    updatedPriceList.splice(index, 1);
-                                    console.log('updatedPriceList aft', updatedPriceList)
-
-                                    setListPrice(updatedPriceList);
-                                    let sum = updatedQuantityList.reduce((r, a, i) => {
-                                      return r + a * updatedPriceList[i]
-                                    }, 0);
-                                    setSubTotal(sum);
-                                    setTotal(sum + sum * tax + shipping);
-                                    arrayHelpers.remove(index);
-                                    setMarkedDelete(-1);
-                                  }}>
-                                    Delete
-                                  </Button>
-                                </Modal.Footer>
-                              </Modal>
-
-                            </div>
-                            <div><Product productId={item?.productId} /></div>
                           </div>
-                        ))}
-                      </div>)}
-                    </FieldArray>}
-                    <div>
-                      <Fee location={values.customer.location} />
-                    </div >
-                    <div>Sub Total {isNaN(subTotal) || !values.customer.location ? 'Not available' : subTotal}</div>
-                    <div>Total {isNaN(total) || !values.customer.location ? 'Not available' : total}</div>
-                    <button type="submit" disabled={
-                      isSubmitting
-                      || !values.customer.location
-                      || !values.customer.name
-                      || subTotal === 0
-                      || isNaN(subTotal)
-                    }>
-                      Submit
-                    </button>
-                  </div>
+
+                        </div>
+                      ))}
+                    </div>)}
+                  </FieldArray>}
+                </div>
+
+                <div style={{ "margin-top": "3vh" }}>
+                  <Fee location={values.customer.location} />
                 </div >
+                <div className='fee'><span className='smallTitle'>Sub Total</span><span>{isNaN(subTotal) || !values.customer.location ? 'Not available' : subTotal}</span> </div>
+                <div className='fee'><span className='smallTitle'>Total</span><span>{isNaN(total) || !values.customer.location ? 'Not available' : total}</span> </div>
+                <button id='checkoutButton' type="submit" disabled={
+                  isSubmitting
+                  || !values.customer.location
+                  || !values.customer.name
+                  || subTotal === 0
+                  || isNaN(subTotal)
+                  || values.customer.name.length > 50
+                }>
+                  Checkout
+                </button>
+              </div>
 
 
-              </Form >
-            )
-          }
+            </Form >
+          )
+        }
 
-        </Formik >
-      </div>
+      </Formik >
     );
 }
-/**
- * Blocks all navigation attempts. This is useful for preventing the page from
- * changing until some condition is met, like saving form data.
- *
- * @param  blocker
- * @param  when
- * @see https://reactrouter.com/api/useBlocker
- */
+
 function useBlocker(blocker, when = true) {
   const { navigator } = useContext(NavigationContext);
-
-  console.log('navigator ', navigator)
   useEffect(() => {
     if (!when) return;
 
@@ -542,9 +490,6 @@ function useBlocker(blocker, when = true) {
       const autoUnblockingTx = {
         ...tx,
         retry() {
-          // Automatically unblock the transition so it can play all the way
-          // through before retrying it. TODO: Figure out how to re-enable
-          // this block if the transition is cancelled for some reason.
           unblock();
           tx.retry();
         },
@@ -555,16 +500,10 @@ function useBlocker(blocker, when = true) {
     return unblock;
   }, [navigator, blocker, when]);
 }
-/**
- * Prompts the user with an Alert before they leave the current screen.
- *
- * @param  message
- * @param  when
- */
+
 function usePrompt(message, when = true) {
   const blocker = useCallback(
     (tx) => {
-      // eslint-disable-next-line no-alert
       if (window.confirm(message)) tx.retry();
     },
     [message]
