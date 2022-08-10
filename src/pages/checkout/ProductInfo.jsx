@@ -31,10 +31,11 @@ export function Product(productId, price) {
   }, [setQueryPrice, price, queryPrice, getProduct?.data?.product.price])
   if (getProduct.loading) return <div>Loading...</div>
   return (
-    <div className='product'>
-      <div>{getProduct.data?.product?.name}</div>
-      <div>{getProduct.data?.product?.price}</div>
+    <div className='productDetail'>
       <div><img src={getProduct.data?.product?.pictures} style={{ height: 100, width: 100 }} /></div>
+      <div className='smallTitle'>{getProduct.data?.product?.name}</div>
+      <div>{getProduct.data?.product?.price}</div>
+
     </div>
   );
 }

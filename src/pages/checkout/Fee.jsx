@@ -1,5 +1,6 @@
 import React from 'react'
 import { useQuery, gql } from '@apollo/client';
+import './Cart.css';
 
 const GET_FEE = gql`
     query Query($location: String!) {
@@ -19,8 +20,8 @@ export function Fee(location) {
 
     return (
         <div>
-            <div>{getFee.data?.fee.shipping}</div>
-            <div>{getFee.data?.fee.tax}</div>
+            <div className='fee'><span className='smallTitle'>Shipping</span> {getFee.data?.fee.shipping}</div>
+            <div className='fee'><span className='smallTitle'>Tax</span> {getFee.data?.fee.tax}</div>
         </div>
 
     );
