@@ -4,7 +4,9 @@ import { useQuery } from '@apollo/client';
 import { IoIosAdd, IoMdRemove } from "react-icons/io";
 import styled from "styled-components";
 import { GET_PRODUCT } from "../../../data/queries/get-product";
-import boho from "../../../common/assets/dress00.png"
+import { useMutation } from '@apollo/client';
+import { ADD_TO_CART_MUTATION } from "../../../data/mutations/add-to-cart";
+import { borderRadius } from '@mui/system';
 
 const Container = styled.div`
   margin-top: 50px;
@@ -122,11 +124,21 @@ const Product = () => {
   const [pictures, setPictures] = useState([])
   const [sizes, setSizes] = useState([])
   const [colors, setColors] = useState([])
+  const [selectedSize, setSelectedSize] = useState("")
+  const [selectedColor, setSelectedColor] = useState("")
+  const [selectedQuantity, setSelectedQuantity] = useState("")
   const {error, loading, data} = useQuery(GET_PRODUCT, {
 		variables: {
 			productId: productID
 		},
 	})
+  const [addToCart, result] = useMutation(ADD_TO_CART_MUTATION)
+  const [customerID, setCustomerID] = useState(() => {
+    // getting stored value
+    const saved = window.localStorage.getItem("customerID");
+    const initialValue = JSON.parse(saved);
+    return initialValue || "";
+  });
 
   useEffect(()=>{     
       if (data) {
@@ -137,6 +149,26 @@ const Product = () => {
         setColors(data.product.colors)
       }
   }, [data])
+
+  //Add to cart
+  const AddToCart = () => {
+      addToCart({
+        variables: {
+          customerId: customerID,
+          item:{
+            color: selectedColor,
+            productId: productID,
+            size: selectedSize,
+            quantity: 1
+          } 
+        }
+      })
+  }
+
+  useEffect(()=>{
+    console.log(selectedSize)
+    console.log(selectedColor)
+  }, [selectedSize, selectedColor])
 
   return (
     <Container>
@@ -153,7 +185,11 @@ const Product = () => {
               <Filter>
                 <FilterTitle>Colors</FilterTitle>
                 {colors.map((color)=>
-                    <input key={color.hexValue} type="color" value={color.hexValue} disabled/>
+                    <div  key={color.hexValue} 
+                          style={{backgroundColor:color.hexValue, borderRadius:"50%", padding:"10px", border:"1px solid", cursor:"pointer", margin:"2px"}} 
+                          disabled
+                          onClick={(e)=>setSelectedColor(color.hexValue)}>
+                    </div>
                 )}
               </Filter>
             </FilterContainer>
@@ -161,7 +197,11 @@ const Product = () => {
               <Filter>
                 <FilterTitle>Sizes</FilterTitle>
                 {sizes.map((size, index)=>
-                    <p key={index} style={{border:"1px", borderRadius:"8px", padding:"5px"}}>{size}</p>
+                    <p  key={index} 
+                        style={{border:"1px solid", borderRadius:"8px", padding:"5px", cursor:"pointer"}}
+                        onClick={(e)=>setSelectedSize(size)}>
+                          {size}
+                    </p>
                 )}
               </Filter>
             </FilterContainer>
@@ -171,7 +211,7 @@ const Product = () => {
                 <Amount>1</Amount>
                 <IoIosAdd />
               </AmountContainer>
-              <Button>ADD TO CART</Button>
+              <Button onClick={AddToCart}>ADD TO CART</Button>
             </AddContainer>
           </InfoContainer>
         </Wrapper>
