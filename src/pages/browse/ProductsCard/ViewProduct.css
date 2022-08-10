@@ -211,35 +211,49 @@
   border-radius: 8px;
   cursor: pointer;
 }
+.detail-filter-size:hover {
+  background-color: #ddd5bf;
+}
 .detail-add-container {
-  width: 80%;
+  width: 85%;
+  margin: 20px 0px;
   display: flex;
-  /* align-items: center; */
-  justify-content: space-around;
-  gap: 30px;
+  /* align-items: left; */
+  justify-content: space-between;
+  gap: 20px;
 }
 .detail-amount-container {
   display: flex;
-  align-items: center;
-  font-weight: 700;
+  margin-left: 0px;
 }
 .detail-input {
   width: 80px;
-  height: 30px;
-  border: 2px solid teal;
+  height: 40px;
+  border: 2px solid #597d35;
   display: flex;
   align-items: center;
-  /* justify-content: space-between;
-  margin: 0px 10px; */
   text-align: center;
+  border-left: none;
+  border-right: none;
 }
 .detail-button {
-  padding: 2px;
-  border: 2px solid rgb(128, 94, 0);
+  padding: 0px 2px;
+  border: 2px solid #597d35;
+  background-color: white;
+  cursor: pointer;
+  height: 40px;
+  margin-top: 5px;
+}
+.detail-button :hover {
+  background-color: #ddd5bf;
+}
+.detail-add-cart-btn {
+  padding: 10px 20px;
+  border: 2px solid #597d35;
   background-color: white;
   cursor: pointer;
   font-weight: 500;
 }
-.detail-button :hover {
-  background-color: #f8f4f4;
+.detail-add-cart-btn:hover {
+  background-color: #ddd5bf;
 }

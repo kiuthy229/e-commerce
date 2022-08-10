@@ -9,53 +9,6 @@ import { ADD_TO_CART_MUTATION } from "../../../data/mutations/add-to-cart";
 import { borderRadius } from '@mui/system';
 import '../ProductsCard/ViewProduct.css';
 
-const Container = styled.div`
-  
-`;
-const Wrapper = styled.div`
-  
-  
-`;
-
-const ImgContainer = styled.div`
-  flex: 1;
-`;
-
-const Image = styled.img`
-  
- 
-`;
-
-const InfoContainer = styled.div`
-  
-`;
-
-const Title = styled.h1`
-  
-`;
-
-const Desc = styled.p`
-  margin: 20px 0px;
-`;
-
-const Price = styled.span`
-  
-`;
-
-const FilterContainer = styled.div`
- 
-
-`;
-
-const Filter = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const FilterTitle = styled.span`
-  
-`;
-
 const FilterColor = styled.div`
   width: 20px;
   height: 20px;
@@ -64,45 +17,6 @@ const FilterColor = styled.div`
   margin: 0px 5px;
   cursor: pointer;
 `;
-
-const FilterSize = styled.select`
- 
-`;
-
-const AddContainer = styled.div`
- 
-
-`;
-
-const AmountContainer = styled.div`
-  display: flex;
-  align-items: center;
-  font-weight: 700;
-`;
-
-const input = styled.span`
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
-  border: 1px solid teal;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0px 5px;
-`;
-
-const Button = styled.button`
-  padding: 15px;
-  border: 2px solid teal;
-  background-color: white;
-  cursor: pointer;
-  font-weight: 500;
-
-  &:hover{
-      background-color: #f8f4f4;
-  }
-`;
-
 const Product = () => {
   const params = useParams();
   console.log(params.id)
@@ -193,12 +107,13 @@ const Product = () => {
               </div>
             </div>
             <div className="detail-add-container">
+            <div className="detail-filter-title">Quantity</div>
               <div className="detail-amount-container">
                 <button className="detail-button"><IoMdRemove /></button>
                 <input className="detail-input"/>
                 <button className="detail-button"><IoIosAdd /></button>
               </div>
-              <Button onClick={AddToCart}>ADD TO CART</Button>
+              <button className="detail-add-cart-btn" onClick={AddToCart}>ADD TO CART</button>
             </div>
           </div>
         </div>
