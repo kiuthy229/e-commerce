@@ -92,7 +92,7 @@ export const Viewallproducts = () => {
                 <a href={`/product/${product.id}`}>
                   <div class="product-card">
                     <div>
-                      <img className="product-pic" src={process.env.PUBLIC_URL + "logo192.png"}/>
+                      <img className="product-pic" src={process.env.PUBLIC_URL + "upload-images/" + product.pictures[0]}/>
                     </div>
                     <h1 class="product-name">{product.name}</h1>
                     <div class="product-colors"></div>

@@ -143,7 +143,7 @@ const Product = () => {
       {data && 
         <Wrapper>
           <ImgContainer>
-              <img className="product-pic" src={process.env.PUBLIC_URL + "upload-images/" + pictures[0]}/>
+              <img className="product-pic" src={process.env.PUBLIC_URL + "logo192.png"}/>
           </ImgContainer>
           <InfoContainer>
             <Title>{product.name}</Title>
