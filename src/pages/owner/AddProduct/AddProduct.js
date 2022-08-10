@@ -4,24 +4,12 @@ import { useMutation } from "@apollo/client/react/hooks";
 import "./AddProduct.css"
 import axios from "axios";
 import { Formik, Form, FastField } from "formik";
-import Dropzone from "react-dropzone";
-import Thumb from "./Thumb";
 import { GetColorName } from 'hex-color-to-color-name';
 import isBefore from 'date-fns/isBefore';
 import isAfter from 'date-fns/isAfter';
 import remove from '../../../common/assets/remove.png';
 
 const AddProduct = () => {
-    //Styling for dropzone
-    const dropzoneStyle = {
-        width: "600px",
-        height: "auto",
-        borderWidth: 2,
-        borderColor: "rgb(102, 102, 102)",
-        borderStyle: "dashed",
-        borderRadius: 5,
-        margin:"3px 0px 3px 0px",
-      };
 
     const [createProduct, {error, loading, data}] = useMutation(ADD_PRODUCT_MUTATION)
     const [sizesArray, setSizesArray] = useState([""])
@@ -30,20 +18,24 @@ const AddProduct = () => {
     const [selectedPictures, setSelectedPictures ] = useState([]);
     const [pictures, setPictures] = useState([]);
 
+    //ADD SIZE FUNCTION
     const AddSize = () =>{ 
         setSizesArray((array)=>[...array,""])
     }
 
+    //REMOVE SIZE FUNCTION
     const RemoveSize = useCallback((index) => {
         const sizesArrayCopy = [...sizesArray]
         sizesArrayCopy.splice(index,1)
         setSizesArray(sizesArrayCopy);
     }, [sizesArray]);
 
+    //ADD COLOR FUNCTION
     const AddColor = () =>{ 
         setColorsArray((array)=>[...array,""])
     }
 
+    //REMOVE COLOR FUNCTION
     const RemoveColor = useCallback((index) => {
         const colorsArrayCopy = [...colorsArray]
         colorsArrayCopy.splice(index,1)
@@ -86,12 +78,32 @@ const AddProduct = () => {
                 if (values.description.length > 1000) {
                     errors.description = 'Too long description';
                 }
-                if (!isBefore(new Date(values.featuringFrom.slice(6,10), values.featuringFrom.slice(3,5) -1, values.featuringFrom.slice(0,2)), new Date())){
+                if (isBefore(new Date(values.featuringFrom.slice(6,10), values.featuringFrom.slice(3,5) -1, values.featuringFrom.slice(0,2)), new Date())){
                     errors.featuringFrom = '"Featuring from" date should be greater or equal today'
+                }
+                if (!/^(\d{2})(\/)(\d{2})(\/)(\d{4})$/i.test(values.featuringFrom)) {
+                    errors.featuringFrom = 'Invalid date';
+                }
+                if(values.featuringFrom.slice(0,2) > 31 || 
+                        values.featuringFrom.slice(0,2) < 1 || 
+                        values.featuringFrom.slice(3,5) -1 > 12 || 
+                        values.featuringFrom.slice(3,5) -1< 1 ||
+                        values.featuringFrom.slice(6,10) < 0){
+                            errors.featuringFrom = 'Not exist "Featuring from" date';
                 }
                 if (!isAfter(new Date(values.featuringTo.slice(6,10), values.featuringTo.slice(3,5) -1, values.featuringTo.slice(0,2)), 
                             new Date(values.featuringFrom.slice(6,10), values.featuringFrom.slice(3,5) -1, values.featuringFrom.slice(0,2)))){
                     errors.featuringTo = '"Featuring to" date should be greater than “Featuring from” date'
+                }
+                if (!/^(\d{2})(\/)(\d{2})(\/)(\d{4})$/i.test(values.featuringTo)) {
+                    errors.featuringTo = 'Invalid date';
+                }
+                if(values.featuringTo.slice(0,2)>31 || 
+                        values.featuringTo.slice(0,2)<1 || 
+                        values.featuringTo.slice(3,5) -1 >12 || 
+                        values.featuringTo.slice(3,5) -1<1 ||
+                        values.featuringTo.slice(6,10)<0){
+                            errors.featuringTo = 'Not exist "Featuring from" date';
                 }
                 return errors;
             }}
@@ -195,7 +207,7 @@ const AddProduct = () => {
                                     {colorsArray.map((color, index) => {
                                         return (<span className="owner-add-colors-container" key={index}>
                                                     <div className="owner-add-color-inner">
-                                                        <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={handleChange}/>
+                                                        <input className="ipt-color-hex" type="color" name={`colors[${index}].hexValue`} onChange={handleChange} onBlur={() => setFieldTouched(`colors[${index}].hexValue`, true)}/>
                                                     </div>
                                                     <div className="owner-add-color-inner">
                                                         <button type="button" className="owner-remove-color-btn hide-remove-color" onClick={()=>RemoveColor(index)}></button>
@@ -203,7 +215,7 @@ const AddProduct = () => {
                                                 </span>        
                                     )})}      
                                 </div>  
-                                {errors.colors && touched.colors && errors.colors}                       
+                                <span className="error-color">{errors.colors && touched.colors && errors.colors}</span>                       
                                 <button type="button" className="add-color" onClick={AddColor}>Add color</button>
                             </div>
 
@@ -225,7 +237,7 @@ const AddProduct = () => {
                             <div className="descriptionField">
                                 <label className="lbl-description">Description</label>
                                 <textarea rows="10" cols="10" className="ipt-description" placeholder="Description" id="description" name="description" onChange={handleChange} value={values.description}/>
-                                {errors.description && touched.description && errors.description}
+                                <span className="error-description">{errors.description && touched.description && errors.description}</span>
                             </div>
                             
                             <div className="categoriesField">
@@ -244,13 +256,16 @@ const AddProduct = () => {
                             </div>
 
                             <div>
-                                <label className="lbl-featuringFrom">Featuring From</label>
-                                <input className="ipt-featuringFrom" type="text" format="dd/mm/yyyy"  name="featuringFrom" onChange={handleChange} defaultValue={values.featuringFrom}/>
-                                {errors.featuringFrom && touched.featuringFrom && errors.featuringFrom}
-
-                                <label className="lbl-featuringTo">Featuring To</label>           
-                                <input className="ipt-featuringTo" type="text" format="dd/mm/yyyy" name="featuringTo" onChange={handleChange} defaultValue={values.featuringTo}/>
-                                {errors.featuringTo && touched.featuringTo && errors.featuringTo}
+                                <div>
+                                    <label className="lbl-featuringFrom">Featuring From</label>
+                                    <input className="ipt-featuringFrom" type="text" format="dd/mm/yyyy"  name="featuringFrom" onChange={handleChange} defaultValue={values.featuringFrom}/>
+                                    <span className="error-featuringFrom">{errors.featuringFrom && touched.featuringFrom && errors.featuringFrom}</span>
+                                </div>
+                                <div>
+                                    <label className="lbl-featuringTo">Featuring To</label>           
+                                    <input className="ipt-featuringTo" type="text" format="dd/mm/yyyy" name="featuringTo" onChange={handleChange} defaultValue={values.featuringTo}/>
+                                    <span className="error-featuringTo">{errors.featuringTo && touched.featuringTo && errors.featuringTo}</span>
+                                </div>
                             </div>
 
                             <div>

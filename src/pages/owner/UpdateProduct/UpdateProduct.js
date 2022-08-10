@@ -4,30 +4,23 @@ import { useMutation, useQuery } from "@apollo/client/react/hooks";
 import "./UpdateProduct.css"
 import axios from "axios";
 import { Formik, Form, FastField } from "formik";
-import Dropzone from "react-dropzone";
-import Thumb from "../AddProduct/Thumb";
 import { GetColorName } from 'hex-color-to-color-name';
 import { GET_PRODUCT } from "../../../data/queries/get-product";
 import isBefore from 'date-fns/isBefore';
+import isAfter from 'date-fns/isAfter';
 import remove from '../../../common/assets/remove.png';
+import { LOAD_PRODUCTS } from "../../../data/queries/get-products";
 
 const UpdateProduct = (props) => {
-    const dropzoneStyle = {
-        width: "400px",
-        height: "auto",
-        borderWidth: 2,
-        borderColor: "rgb(102, 102, 102)",
-        borderStyle: "dashed",
-        borderRadius: 5,
-        margin:"3px 0px 3px 0px",
-      };
 
-    const {error, loading, data} = useQuery(GET_PRODUCT, {
+    const {error, loading, data, refetch} = useQuery(GET_PRODUCT, {
 		variables: {
 			productId: props.productID
 		},
 	})
-    const [updateProduct, result] = useMutation(UPDATE_PRODUCT_MUTATION)
+    const [updateProduct, result] = useMutation(UPDATE_PRODUCT_MUTATION, {
+        refetchQueries: [{ query: LOAD_PRODUCTS }],
+    })
     const [sizesArray, setSizesArray] = useState([])
     const [colorsArray, setColorsArray] = useState([])
     const [sizesArrayLength, setSizesArrayLength] = useState([])
@@ -98,8 +91,35 @@ const UpdateProduct = (props) => {
 
                     validate = {values => {
                         const errors = {};
-                        if (!isBefore(new Date(values.featuringFrom.toString().slice(6,10), values.featuringFrom.toString().slice(3,5) -1, values.featuringFrom.toString().slice(0,2)), new Date())){
-                            errors.featuringFrom = '“Featuring from” date should be greater or equal today'
+                        if (values.description.length > 1000) {
+                              errors.description = 'Too long description';
+                        }
+                        if (isBefore(new Date(values.featuringFrom.toString().slice(6,10), values.featuringFrom.toString().slice(3,5) -1, values.featuringFrom.toString().slice(0,2)), new Date())){
+                            errors.featuringFrom = '"Featuring from" date should be greater or equal today'
+                        }
+                        if (!/^(\d{2})(\/)(\d{2})(\/)(\d{4})$/i.test(values.featuringFrom)) {
+                            errors.featuringFrom = 'Invalid date';
+                        }
+                        if(values.featuringFrom.slice(0,2) > 31 || 
+                                values.featuringFrom.slice(0,2) < 1 || 
+                                values.featuringFrom.slice(3,5) -1 > 12 || 
+                                values.featuringFrom.slice(3,5) -1< 1 ||
+                                values.featuringFrom.slice(6,10) < 0){
+                                    errors.featuringFrom = 'Not exist "Featuring from" date';
+                        }
+                        if (!isAfter(new Date(values.featuringTo.slice(6,10), values.featuringTo.slice(3,5) -1, values.featuringTo.slice(0,2)), 
+                                    new Date(values.featuringFrom.slice(6,10), values.featuringFrom.slice(3,5) -1, values.featuringFrom.slice(0,2)))){
+                            errors.featuringTo = '"Featuring to" date should be greater than “Featuring from” date'
+                        }
+                        if (!/^(\d{2})(\/)(\d{2})(\/)(\d{4})$/i.test(values.featuringTo)) {
+                            errors.featuringTo = 'Invalid date';
+                        }
+                        if(values.featuringTo.slice(0,2)>31 || 
+                                values.featuringTo.slice(0,2)<1 || 
+                                values.featuringTo.slice(3,5) -1 >12 || 
+                                values.featuringTo.slice(3,5) -1<1 ||
+                                values.featuringTo.slice(6,10)<0){
+                                    errors.featuringTo = 'Not exist "Featuring from" date';
                         }
                         return errors
                     }}
@@ -128,10 +148,10 @@ const UpdateProduct = (props) => {
                                     pictures: selectedPictures.concat(picturesArray.map((file) => file)),
                                     colors: colorsUpdate,
                                     sizes: values.sizes.map((size) => size).concat(sizesArray.map((size) => size)),
-                                    featuringFrom: product.featuringFrom,
-                                    featuringTo: product.featuringTo
+                                    featuringFrom: values.featuringFrom,
+                                    featuringTo: values.featuringTo
                                 }
-                            })
+                            }).then(refetch)
                             const formData = new FormData();
                             pictures.filter((file) =>{formData.append("pictures", file)});
                             axios.post("http://localhost:3001/upload", formData, {
@@ -171,7 +191,6 @@ const UpdateProduct = (props) => {
                             const name = event.target.name;
                             const value = event.target.value;
                             setProduct(values => ({...values, [name]: value}))
-                            console.log(product)
                         }
 
                         const handleImageChange = (e) => {
@@ -190,7 +209,6 @@ const UpdateProduct = (props) => {
                         };
                     
                         const renderPhotos = (source) => {
-                            console.log('source: ', source);
                             return source.map((photo) => {
                                 return <img src={photo} alt="" key={photo}/>;
                             });
@@ -271,6 +289,7 @@ const UpdateProduct = (props) => {
                                     <div className="descriptionField">
                                         <label className="update-lbl-description">Description</label>
                                         <textarea className="update-ipt-description" placeholder="Description" name="description" onChange={handleChange} value={product.description}/>
+                                        {errors.description && touched.description && errors.description}
                                     </div>
 
                                     <div>
@@ -295,11 +314,12 @@ const UpdateProduct = (props) => {
 
                                     <div>
                                         <label className="update-lbl-featuringFrom">Featuring From</label>
-                                        <input className="update-ipt-featuringFrom" type="text"  name="featuringFrom" onChange={handleChange} value={product.featuringFrom}/>
+                                        <input className="update-ipt-featuringFrom" type="text"  name="featuringFrom" onChange={(e) => {setFieldValue('featuringFrom', e.target.value)}} defaultValue={product.featuringFrom}/>
                                         {errors.featuringFrom && touched.featuringFrom && errors.featuringFrom}
 
                                         <label className="update-lbl-featuringTo">Featuring To</label>           
-                                        <input className="update-ipt-featuringTo" type="text" name="featuringTo" onChange={handleChange} value={product.featuringTo}/>
+                                        <input className="update-ipt-featuringTo" type="text" name="featuringTo" onChange={(e) => {setFieldValue('featuringTo', e.target.value)}} defaultValue={product.featuringTo}/>
+                                        {errors.featuringTo && touched.featuringTo && errors.featuringTo}
                                     </div>
 
                                     <div>

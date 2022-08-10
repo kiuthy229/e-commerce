@@ -62,11 +62,6 @@ const NavBar = () => {
                                     <a className="nav-link" href="/checkout">Checkout</a>
                                 </MenuItem>
                             </li>
-                            <li className="nav-item">
-                            <MenuItem>
-                                <FaShoppingCart style={{fontSize: 20}}/>   
-                            </MenuItem>
-                            </li>
                         </ul> 
                         </ div>
                     </Right>
