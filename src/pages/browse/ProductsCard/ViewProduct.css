@@ -160,11 +160,11 @@
   flex: 1;
 }
 .detail-image {
-  width: 80%;
-  height: 90vh;
+  width: 90%;
+  height: 100vh;
   object-fit: cover;
   position: relative;
-  left: 150px;
+  left: 50px;
 }
 .detail-info-container {
   flex: 1;

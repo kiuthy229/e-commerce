@@ -94,7 +94,7 @@ const Product = () => {
       {data && 
         <div className="detail-wrapper">
           <div className="detail-img-container">
-              <img className="detail-image" src={process.env.PUBLIC_URL + "logo192.png"}/>
+              <img className="detail-image" src={process.env.PUBLIC_URL + "../upload-images/" + pictures[1]}></img>
           </div>
           <div className="detail-info-container">
             <div className="detail-title">{product.name}</div>
