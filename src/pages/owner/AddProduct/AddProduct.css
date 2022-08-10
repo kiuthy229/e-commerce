@@ -6,7 +6,7 @@
     position: absolute;
     width: 80%;
     height: 100%;
-    left: 15%;
+    left: 25%;
     top: 50px;
 
     margin: auto;
@@ -190,7 +190,7 @@ div input{
     padding: 4px 5px;
     font-size: 13px;
     background-color: #FFFFFF;
-    color:#FF993C ;
+    color:#476930 ;
     
     font-weight: 700;
     
@@ -202,7 +202,7 @@ div input{
     left: 79%;
     top:-37px;
 
-    border: 2px solid #FF993C;
+    border: 2px solid #476930;
     border-radius: 8px;
     cursor: pointer;
 }
@@ -217,7 +217,7 @@ div input{
     padding: 4px 5px;
     font-size: 13px;
     background-color: #FFFFFF;
-    color:#FF993C ;
+    color:#476930 ;
     
     font-weight: 700;
     
@@ -229,7 +229,7 @@ div input{
     left: 79%;
     top:-32px;
 
-    border: 2px solid #FF993C;
+    border: 2px solid #476930;
     border-radius: 8px;
     cursor: pointer;
 }
@@ -244,7 +244,7 @@ div input{
     padding: 4px 5px;
     font-size: 13px;
     background-color: #FFFFFF;
-    color:#FF993C ;
+    color:#476930 ;
     
     font-weight: 700;
     
@@ -255,13 +255,13 @@ div input{
     height: 5.5%;
     left: 35%;
 
-    border: 2px solid #FF993C;
+    border: 2px solid #476930;
     border-radius: 8px;
 }
 .add-product:hover{
-    background-color: #FF993C;
+    background-color: #476930;
     color: #FFFFFF;
-    border: 2.5px solid #FF993C;
+    border: 2.5px solid #476930;
 }
 .ipt-color-hex{
     -webkit-appearance: none;
@@ -301,7 +301,7 @@ input[type=file]::-webkit-file-upload-button {
 .label{
   height: 50px;
   width: 200px;
-  background-color:#2a3eb1;
+  background-color:#c8b88a;
   color: white;
   display: grid;
   place-items: center;

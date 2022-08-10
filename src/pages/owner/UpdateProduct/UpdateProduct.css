@@ -33,19 +33,19 @@
     padding: 5px 5px 5px 5px;
     gap: 10px;
     font-weight: 600;
-    color: #FF993C;
+    color: #476930;
     width: 80px;
     height: 35px;
     font-size: 15px;
-    border: 2.5px solid #FF993C;
+    border: 2.5px solid #476930;
     border-radius: 8px;
     background-color: #FFFFFF;
 
   }
 .cancel:hover{
-    background-color: #FF993C;
+    background-color: #476930;
     color: #FFFFFF;
-    border: 2.5px solid #FF993C;
+    border: 2.5px solid #476930;
 }
 .update-product{
     box-sizing: border-box;
@@ -55,19 +55,19 @@
     padding: 5px 5px 5px 5px;
     gap: 10px;
     font-weight: 600;
-    color: #FF993C;
+    color: #476930;
     width: 80px;
     height: 35px;
     font-size: 15px;
-    border: 2.5px solid #FF993C;
+    border: 2.5px solid #476930;
     border-radius: 8px;
     background-color: #FFFFFF;
 
   }
 .update-product:hover{
-    background-color: #FF993C;
+    background-color: #476930;
     color: #FFFFFF;
-    border: 2.5px solid #FF993C;
+    border: 2.5px solid #476930;
 }
 
 /*sizes*/

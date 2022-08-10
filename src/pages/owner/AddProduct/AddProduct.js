@@ -245,19 +245,16 @@ const AddProduct = () => {
 
                             <div>
                                 <label className="lbl-featuringFrom">Featuring From</label>
-                                <input className="ipt-featuringFrom" type="text" format="dd/mm/yyyy"  name="featuringFrom" onChange={handleChange} value="01/01/2022"/>
+                                <input className="ipt-featuringFrom" type="text" format="dd/mm/yyyy"  name="featuringFrom" onChange={handleChange} defaultValue={values.featuringFrom}/>
                                 {errors.featuringFrom && touched.featuringFrom && errors.featuringFrom}
 
                                 <label className="lbl-featuringTo">Featuring To</label>           
-                                <input className="ipt-featuringTo" type="text" format="dd/mm/yyyy" name="featuringTo" onChange={handleChange} value="31/12/2022"/>
+                                <input className="ipt-featuringTo" type="text" format="dd/mm/yyyy" name="featuringTo" onChange={handleChange} defaultValue={values.featuringTo}/>
                                 {errors.featuringTo && touched.featuringTo && errors.featuringTo}
                             </div>
 
                             <div>
                                 <button className="add-product" type="submit" disabled={isSubmitting}>{isSubmitting ? "Submitting..." : "Submit"}</button>
-                            </div>
-                            <div>
-                                error:{errors.name && touched.name && errors.name}
                             </div>
                     </Form>
                 )
