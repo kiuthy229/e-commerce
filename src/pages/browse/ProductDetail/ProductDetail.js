@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/client';
 import { IoIosAdd, IoMdRemove } from "react-icons/io";
 import styled from "styled-components";
 import { GET_PRODUCT } from "../../../data/queries/get-product";
+import boho from "../../../common/assets/dress00.png"
 
 const Container = styled.div`
   margin-top: 50px;
@@ -119,6 +120,8 @@ const Product = () => {
   const productID = params.id
   const [product, setProduct] = useState({})
   const [pictures, setPictures] = useState([])
+  const [sizes, setSizes] = useState([])
+  const [colors, setColors] = useState([])
   const {error, loading, data} = useQuery(GET_PRODUCT, {
 		variables: {
 			productId: productID
@@ -127,41 +130,51 @@ const Product = () => {
 
   useEffect(()=>{     
       if (data) {
-        console.log(data)
-          setProduct(data.product)
-          setPictures(data.pictures);
+        console.log(data);
+        setProduct(data.product);
+        setPictures(data.product.pictures);
+        setSizes(data.product.sizes);
+        setColors(data.product.colors)
       }
   }, [data])
 
   return (
     <Container>
       {data && 
-      <Wrapper>
-        <ImgContainer>
-            <img src={process.env.PUBLIC_URL + 'upload-images/' + pictures[0]}/>
-        </ImgContainer>
-        <InfoContainer>
-          <Title>{product.name}</Title>
-          <Desc>{product.description}</Desc>
-          <Price>$ {product.price}</Price>
-          <FilterContainer>
-            <Filter>
-              <FilterTitle>Color</FilterTitle>
-              {product.colors.map((color)=>
-                  <input type="color" value={color.hexValue} disabled/>
-              )}
-            </Filter>
-          </FilterContainer>
-          <AddContainer>
-            <AmountContainer>
-              <IoMdRemove />
-              <Amount>1</Amount>
-              <IoIosAdd />
-            </AmountContainer>
-            <Button>ADD TO CART</Button>
-          </AddContainer>
-        </InfoContainer>
-      </Wrapper>
+        <Wrapper>
+          <ImgContainer>
+              <img className="product-pic" src={process.env.PUBLIC_URL + "upload-images/" + pictures[0]}/>
+          </ImgContainer>
+          <InfoContainer>
+            <Title>{product.name}</Title>
+            <Desc>{product.description}</Desc>
+            <Price>$ {product.price}</Price>
+            <FilterContainer>
+              <Filter>
+                <FilterTitle>Colors</FilterTitle>
+                {colors.map((color)=>
+                    <input key={color.hexValue} type="color" value={color.hexValue} disabled/>
+                )}
+              </Filter>
+            </FilterContainer>
+            <FilterContainer>
+              <Filter>
+                <FilterTitle>Sizes</FilterTitle>
+                {sizes.map((size, index)=>
+                    <p key={index} style={{border:"1px", borderRadius:"8px", padding:"5px"}}>{size}</p>
+                )}
+              </Filter>
+            </FilterContainer>
+            <AddContainer>
+              <AmountContainer>
+                <IoMdRemove />
+                <Amount>1</Amount>
+                <IoIosAdd />
+              </AmountContainer>
+              <Button>ADD TO CART</Button>
+            </AddContainer>
+          </InfoContainer>
+        </Wrapper>
       }
     </Container>
   );
