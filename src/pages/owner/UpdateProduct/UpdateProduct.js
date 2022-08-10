@@ -323,7 +323,7 @@ const UpdateProduct = (props) => {
                                     </div>
 
                                     <div>
-                                        <button className="cancel" onClick={props.onClose}>Hủy</button>
+                                        <button className="cancel" onClick={props.onClose}>Cancel</button>
                                         <button className="update-product" type="submit" disabled={isSubmitting}>{isSubmitting ? "Updating..." : "Update"}</button>
                                     </div>
                             </Form>
