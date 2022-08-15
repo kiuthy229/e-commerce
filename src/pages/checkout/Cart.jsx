@@ -238,42 +238,34 @@ export function Cart() {
               customer: values.customer
             }
           }).then(
-            (value) => {
-              getLazyCart({
-                variables: {
-                  customerId: value.data.updateCustomer.id
-                }
-              }).then(
-                async (value) => {
-                  for (var product of value.data.customer.items.map(item => item)) {
-                    var currentQuantity = 0;
-                    await getProduct({
-                      variables: {
-                        productId: product.productId
-                      }
-                    }).then(
-                      value => {
-                        currentQuantity = value.data.product.stock;
-                      }
-                    )
-
-                    await updateQuantityDB({
-                      variables: {
-                        product: {
-                          id: product.productId,
-                          stock: currentQuantity - product.quantity
-                        }
-                      }
-                    })
+            async (value) => {
+              for (var product of values.customer.items.map(item => item)) {
+                var currentQuantity = 0;
+                await getProduct({
+                  variables: {
+                    productId: product.productId
                   }
-                  await emptyCart({
-                    variables: {
-                      customerId: customerId
+                }).then(
+                  value => {
+                    currentQuantity = value.data.product.stock;
+                  }
+                )
+
+                await updateQuantityDB({
+                  variables: {
+                    product: {
+                      id: product.productId,
+                      stock: currentQuantity - product.quantity
                     }
-                  })
-                  navigate('/success', { replace: true })
+                  }
+                })
+              }
+              await emptyCart({
+                variables: {
+                  customerId: customerId
                 }
-              )
+              })
+              navigate('/success', { replace: true })
             }
           )
         }}

@@ -85,41 +85,62 @@ const UpdateProduct = (props) => {
                         pictures: [],
                         colors: product.colors,
                         sizes: sizesArray,
-                        featuringFrom:'',
-                        featuringTo:''
+                        featuringFrom: product.featuringFrom,
+                        featuringTo: product.featuringTo
                     }}
 
                     validate = {values => {
                         const errors = {};
-                        if (values.description.length > 1000) {
+                        if (!product.name) {
+                            errors.name = 'Required name';
+                        }
+                        if (product.name.length > 144) {
+                              errors.name = 'Please input a string less than 144 characters';
+                        } 
+                        if (!product.price) {
+                              errors.price = 'Required price';
+                        }
+                        if (parseInt(product.price) < 0) {
+                              errors.price = 'Invalid price';
+                        }
+                        if (!product.stock) {
+                              errors.stock = 'Required stock quantity';
+                        }
+                        if (parseInt(product.stock) < 0) {
+                              errors.stock = 'Invalid stock quantity';
+                        }
+                        if (!product.colors) {
+                              errors.colors = 'Required color';
+                        }
+                        if (product.description.length > 1000) {
                               errors.description = 'Too long description';
                         }
-                        if (isBefore(new Date(values.featuringFrom.toString().slice(6,10), values.featuringFrom.toString().slice(3,5) -1, values.featuringFrom.toString().slice(0,2)), new Date())){
+                        if (isBefore(new Date(product.featuringFrom.toString().slice(6,10), product.featuringFrom.toString().slice(3,5) -1, product.featuringFrom.toString().slice(0,2)), new Date())){
                             errors.featuringFrom = '"Featuring from" date should be greater or equal today'
                         }
-                        if (!/^(\d{2})(\/)(\d{2})(\/)(\d{4})$/i.test(values.featuringFrom)) {
-                            errors.featuringFrom = 'Invalid date';
+                        if (!/^(\d{2})(\/)(\d{2})(\/)(\d{4})$/i.test(product.featuringFrom)) {
+                            errors.featuringFrom = 'Invalid "Featuring from" date';
                         }
-                        if(values.featuringFrom.slice(0,2) > 31 || 
-                                values.featuringFrom.slice(0,2) < 1 || 
-                                values.featuringFrom.slice(3,5) -1 > 12 || 
-                                values.featuringFrom.slice(3,5) -1< 1 ||
-                                values.featuringFrom.slice(6,10) < 0){
+                        if(product.featuringFrom.slice(0,2) > 31 || 
+                                product.featuringFrom.slice(0,2) < 1 || 
+                                product.featuringFrom.slice(3,5) -1 > 12 || 
+                                product.featuringFrom.slice(3,5) -1< 1 ||
+                                product.featuringFrom.slice(6,10) < 0){
                                     errors.featuringFrom = 'Not exist "Featuring from" date';
                         }
-                        if (!isAfter(new Date(values.featuringTo.slice(6,10), values.featuringTo.slice(3,5) -1, values.featuringTo.slice(0,2)), 
-                                    new Date(values.featuringFrom.slice(6,10), values.featuringFrom.slice(3,5) -1, values.featuringFrom.slice(0,2)))){
+                        if (!isAfter(new Date(product.featuringTo.slice(6,10), product.featuringTo.slice(3,5) -1, product.featuringTo.slice(0,2)), 
+                                    new Date(product.featuringFrom.slice(6,10), product.featuringFrom.slice(3,5) -1, product.featuringFrom.slice(0,2)))){
                             errors.featuringTo = '"Featuring to" date should be greater than “Featuring from” date'
                         }
-                        if (!/^(\d{2})(\/)(\d{2})(\/)(\d{4})$/i.test(values.featuringTo)) {
-                            errors.featuringTo = 'Invalid date';
+                        if (!/^(\d{2})(\/)(\d{2})(\/)(\d{4})$/i.test(product.featuringTo)) {
+                            errors.featuringTo = 'Invalid "Featuring to" date';
                         }
-                        if(values.featuringTo.slice(0,2)>31 || 
-                                values.featuringTo.slice(0,2)<1 || 
-                                values.featuringTo.slice(3,5) -1 >12 || 
-                                values.featuringTo.slice(3,5) -1<1 ||
-                                values.featuringTo.slice(6,10)<0){
-                                    errors.featuringTo = 'Not exist "Featuring from" date';
+                        if(product.featuringTo.slice(0,2)>31 || 
+                                product.featuringTo.slice(0,2)<1 || 
+                                product.featuringTo.slice(3,5) -1 >12 || 
+                                product.featuringTo.slice(3,5) -1<1 ||
+                                product.featuringTo.slice(6,10)<0){
+                                    errors.featuringTo = 'Not exist "Featuring to" date';
                         }
                         return errors
                     }}
@@ -128,6 +149,7 @@ const UpdateProduct = (props) => {
                         setTimeout(() => {
                             alert(JSON.stringify(product, null, 2));
                             var colorsUpdate = []
+                            var categoriesUpdate = []
 
                             if(values.colors)
                             {
@@ -137,6 +159,12 @@ const UpdateProduct = (props) => {
                                 colorsUpdate = colorsArray.map((color)=>({ name: GetColorName(color.hexValue), hexValue: color.hexValue }))
                             }
 
+                            if(values.categories){
+                                categoriesUpdate = values.categories.split(';')
+                            }
+                            else if(!values.categories){
+                                categoriesUpdate = product.categories
+                            }
                             updateProduct({
                                 variables: {
                                     id:product.id,
@@ -144,12 +172,12 @@ const UpdateProduct = (props) => {
                                     price: parseInt(product.price),
                                     stock: parseInt(product.stock),
                                     description: product.description,
-                                    categories: product.categories.split(','),
+                                    categories: categoriesUpdate,
                                     pictures: selectedPictures.concat(picturesArray.map((file) => file)),
                                     colors: colorsUpdate,
                                     sizes: values.sizes.map((size) => size).concat(sizesArray.map((size) => size)),
-                                    featuringFrom: values.featuringFrom,
-                                    featuringTo: values.featuringTo
+                                    featuringFrom: product.featuringFrom,
+                                    featuringTo: product.featuringTo
                                 }
                             }).then(refetch)
                             const formData = new FormData();
@@ -191,6 +219,7 @@ const UpdateProduct = (props) => {
                             const name = event.target.name;
                             const value = event.target.value;
                             setProduct(values => ({...values, [name]: value}))
+                            console.log(product)
                         }
 
                         const handleImageChange = (e) => {
@@ -223,13 +252,18 @@ const UpdateProduct = (props) => {
 
                                         <label className="update-lbl-price">Price</label>
                                         <input className="update-ipt-price" placeholder="Product price" type="number" name="price" onChange={handleChange} defaultValue={product.price}/>
-
+                                    
                                         <label className="update-lbl-stock">Stock</label>
                                         <input className="update-ipt-stock" placeholder="Stock" type="number" name="stock" onChange={handleChange} defaultValue={product.stock}/>
+                                        
                                     </div>
+                                    <div style={{color:"red", fontStyle:"italic", fontSize:"13px"}}>{errors.name && touched.name && errors.name}</div>
+                                    <div style={{color:"red", fontStyle:"italic", fontSize:"13px"}}>{errors.price && touched.price && errors.price}</div>
+                                    <div style={{color:"red", fontStyle:"italic", fontSize:"13px"}}>{errors.stock && touched.stock && errors.stock}</div>
 
                                     <div className="update-colorField">
                                         <label className="update-lbl-color">Colors</label>
+                                        <div style={{color:"red", fontStyle:"italic", fontSize:"13px"}}>{errors.colors && touched.colors && errors.colors}</div>
                                         <div style={{width:"600px", display: "flex", flexWrap: "wrap"}} >
                                             {colorsArray.map((color, index) => {
                                                 return (<span className="owner-add-colors-container" key={index}>
@@ -289,8 +323,9 @@ const UpdateProduct = (props) => {
                                     <div className="descriptionField">
                                         <label className="update-lbl-description">Description</label>
                                         <textarea className="update-ipt-description" placeholder="Description" name="description" onChange={handleChange} value={product.description}/>
-                                        {errors.description && touched.description && errors.description}
+                                        
                                     </div>
+                                    <div style={{color:"red", fontStyle:"italic", fontSize:"13px"}}>{errors.description && touched.description && errors.description}</div>
 
                                     <div>
                                         <label className="update-lbl-categories">Categories</label>
@@ -314,13 +349,13 @@ const UpdateProduct = (props) => {
 
                                     <div>
                                         <label className="update-lbl-featuringFrom">Featuring From</label>
-                                        <input className="update-ipt-featuringFrom" type="text"  name="featuringFrom" onChange={(e) => {setFieldValue('featuringFrom', e.target.value)}} defaultValue={product.featuringFrom}/>
-                                        {errors.featuringFrom && touched.featuringFrom && errors.featuringFrom}
+                                        <input className="update-ipt-featuringFrom" type="text"  name="featuringFrom" onChange={handleChange} defaultValue={product.featuringFrom}/>
 
                                         <label className="update-lbl-featuringTo">Featuring To</label>           
-                                        <input className="update-ipt-featuringTo" type="text" name="featuringTo" onChange={(e) => {setFieldValue('featuringTo', e.target.value)}} defaultValue={product.featuringTo}/>
-                                        {errors.featuringTo && touched.featuringTo && errors.featuringTo}
+                                        <input className="update-ipt-featuringTo" type="text" name="featuringTo" onChange={handleChange} defaultValue={product.featuringTo}/>    
                                     </div>
+                                    <div style={{color:"red", fontStyle:"italic", fontSize:"13px"}}>{errors.featuringFrom && touched.featuringFrom && errors.featuringFrom}</div>
+                                    <div style={{color:"red", fontStyle:"italic", fontSize:"13px"}}>{errors.featuringTo && touched.featuringTo && errors.featuringTo}</div>
 
                                     <div>
                                         <button className="cancel" onClick={props.onClose}>Cancel</button>

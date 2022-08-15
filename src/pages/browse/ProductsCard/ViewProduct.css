@@ -201,8 +201,21 @@
   font-size: 20px;
   font-weight: 200;
 }
-.detail-filter-color {
-
+.detail-filter-color{
+  border-radius:50%;
+  padding:10px;
+  border:1px solid;
+  cursor:pointer;
+  margin:0px 5px;
+}
+.detail-filter-color:hover {
+  border: 2px solid #000000 ;
+}
+.detail-filter-color:focus {
+  border: 2px solid #000000 ;
+}
+.detail-filter-color:active {
+  border: 2px solid #000000 ;
 }
 .detail-filter-size {
   margin-left: 10px;
@@ -212,6 +225,9 @@
   cursor: pointer;
 }
 .detail-filter-size:hover {
+  background-color: #ddd5bf;
+}
+.detail-filter-size:focus {
   background-color: #ddd5bf;
 }
 .detail-add-container {

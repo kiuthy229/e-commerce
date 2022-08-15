@@ -94,7 +94,7 @@ const Product = () => {
       {data && 
         <div className="detail-wrapper">
           <div className="detail-img-container">
-              <img className="detail-image" src={process.env.PUBLIC_URL + "../upload-images/" + pictures[1]}></img>
+              <img className="detail-image" src={process.env.PUBLIC_URL + "../upload-images/" + pictures[0]}></img>
           </div>
           <div className="detail-info-container">
             <div className="detail-title">{product.name}</div>
@@ -104,11 +104,11 @@ const Product = () => {
               <div className="detail-filter">
                 <div className="detail-filter-title">Colors</div>
                 {colors.map((color)=>
-                    <FilterColor  key={color.hexValue} 
-                          style={{backgroundColor:color.hexValue, borderRadius:"50%", padding:"10px", border:"1px solid", cursor:"pointer", margin:"0px 10px"}} 
-                          disabled
-                          onClick={(e)=>setSelectedColor(color.hexValue)}>
-                    </FilterColor>
+                    <div className="detail-filter-color"
+                            key={color.hexValue} 
+                            style={{backgroundColor:color.hexValue}}
+                            onClick={(e)=>setSelectedColor(color.hexValue)}>
+                    </div>
                 )}
               </div>
             </div>
@@ -116,11 +116,11 @@ const Product = () => {
               <div className="detail-filter">
                 <div className="detail-filter-title">Sizes</div>
                 {sizes.map((size, index)=>
-                    <p  className="detail-filter-size"
-                        key={index} 
-                        onClick={(e)=>setSelectedSize(size)}>
+                    <button className="detail-filter-size"
+                            key={index} 
+                            onClick={(e)=>setSelectedSize(size)}>
                           {size}
-                    </p>
+                    </button>
                 )}
               </div>
             </div>

@@ -57,7 +57,7 @@ const AddProduct = () => {
                     hexValue: ''
                 }],
                 sizes: [],
-                featuringFrom:'01/01/2022',
+                featuringFrom:'30/08/2022',
                 featuringTo:'31/12/2022'
             }}
 
@@ -65,12 +65,21 @@ const AddProduct = () => {
                 const errors = {};
                 if (!values.name) {
                   errors.name = 'Required';
+                }
+                if (values.name.length > 144) {
+                    errors.name = 'Please input a string less than 144 characters';
                 } 
                 if (!values.price) {
                     errors.price = 'Required';
                 }
+                if (parseInt(values.price) < 0) {
+                    errors.price = 'Invalid price';
+                }
                 if (!values.stock) {
                     errors.stock = 'Required';
+                }
+                if (parseInt(values.stock) < 0) {
+                    errors.stock = 'Invalid stock quantity';
                 }
                 if (!values.colors) {
                     errors.colors = 'Required';
@@ -117,7 +126,7 @@ const AddProduct = () => {
                             price: parseInt(values.price),
                             stock: parseInt(values.stock),
                             description: values.description,
-                            categories: values.categories.split(','),
+                            categories: values.categories.split(';'),
                             pictures: selectedPictures,
                             colors: values.colors.map((color)=>({ name: GetColorName(color.hexValue), hexValue: color.hexValue })),
                             sizes: values.sizes.map((size) => size),
@@ -163,13 +172,19 @@ const AddProduct = () => {
 
                         const handleImageChange = (e) => {
                             if (e.target.files) {
+
+                                //array to show in UI
                                 const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
-                                const picturesArray = Array.from(e.target.files).map((file) => file.name);
-                                const pictures = Array.from(e.target.files).map((file) => file);
-                    
-                                setSelectedPictures((prevImages) => prevImages.concat(picturesArray))
                                 setSelectedFiles((prevImages) => prevImages.concat(filesArray));
+
+                                //send the URL string to graphql
+                                const picturesArray = Array.from(e.target.files).map((file) => file.name);
+                                setSelectedPictures((prevImages) => prevImages.concat(picturesArray))
+
+                                //send the whole file (picture) to local folder
+                                const pictures = Array.from(e.target.files).map((file) => file);
                                 setPictures((prevImages) => prevImages.concat(pictures));
+
                                 Array.from(e.target.files).map(
                                     (file) => URL.revokeObjectURL(file) // avoid memory leak
                                 );
@@ -247,7 +262,7 @@ const AddProduct = () => {
                                 <input type="file" id="file" multiple onChange={handleImageChange}/>
                                 <div className="label-holder">
                                     <label htmlFor="file" className="label">
-                                        <i className="material-icons">+</i>
+                                        <i>+</i>
                                     </label>
                                 </div>
                                 <div className="result">{renderPhotos(selectedFiles)}</div>

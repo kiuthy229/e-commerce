@@ -19,7 +19,7 @@ const GetProducts = () => {
         const saved = window.localStorage.getItem("customerID");
         const initialValue = JSON.parse(saved);
         return initialValue || "";
-      });
+    });
 
     useEffect(()=>{
         console.log(customerID)
@@ -31,7 +31,8 @@ const GetProducts = () => {
         }
     }, [data])
 
-    const RemoveProduct = ( productID) => {
+    //REMOVE PRODUCT FUNCTION
+    const RemoveProduct = (productID) => {
         // console.log(productID)
         removeProduct({
             variables: {
@@ -44,16 +45,15 @@ const GetProducts = () => {
         }
     }
 
+    //OPEN POPUP
     const openPopupUpdate = (productID) => {
         setOpenUpdate(true);
         setProductId(productID);
-        refetch();
     }
 
+    //CLOSE POPUP
     const togglePopupUpdate= () => {
         setOpenUpdate(!openUpdate);
-        document.getElementsByClassName("product-list").fadeOut(200);
-        refetch();
       }
 
     return (

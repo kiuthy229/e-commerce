@@ -32,7 +32,7 @@ export function Product(productId, price) {
   if (getProduct.loading) return <div>Loading...</div>
   return (
     <div className='productDetail'>
-      <div><img src={getProduct.data?.product?.pictures} style={{ height: 100, width: 100 }} /></div>
+      <div><img src={process.env.PUBLIC_URL + 'upload-images/' + getProduct.data?.product?.pictures[0]} style={{ height: 100, width: 100 }} /></div>
       <div className='smallTitle'>{getProduct.data?.product?.name}</div>
       <div>{getProduct.data?.product?.price}</div>
 
